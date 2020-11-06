@@ -6,20 +6,27 @@ error1 = "end value must be greater than start value !"
 
 class SignalGenerator:
 
-    def __init__(self, sampling_freq=100, signal_freq=1, signal_ampl=1, signal_start=0, signal_end=1):
+    def __init__(self, sampling_freq=100, signal_freq=1, signal_ampl=1, signal_start=0, signal_end=1, multiple_sine=[]):
 
         self._multiple_gen_trig = False
         self._sampling_freq = sampling_freq
-        self._signal_freq = signal_freq
-        self._signal_ampl = signal_ampl
         self._signal_start = signal_start
         self._signal_end = signal_end
         if self._signal_start > self._signal_end:
             raise ValueError(error1)
-        self._sampling_period = 1./self._sampling_freq
         self._time = self._time_gen()
-        self._signal = self._amplitude_gen()
 
+        if len(multiple_sine) == 0:
+            self._sampling_period = 1. / self._sampling_freq
+            self._signal_freq = signal_freq
+            self._signal_ampl = signal_ampl
+            self._signal = self._amplitude_gen()
+
+        else:
+            self._multiple_gen_trig = True
+            self.freq_nam = "("
+            self.multiple_signal_generation(multiple_sine)
+            self.multiple_freq = []
 
     def _time_gen(self, init=True):
         self._sampling_period = 1. / self._sampling_freq
@@ -30,7 +37,6 @@ class SignalGenerator:
             self._time = local_time
             return None
 
-
     def _amplitude_gen(self, init=True):
         local_signal = self._signal_ampl * np.sin(2 * np.pi * self._signal_freq * self._time)
         if init:
@@ -40,7 +46,12 @@ class SignalGenerator:
             return None
 
     def signal_generation(self):
-        self.single_signal_generation()
+
+        if self._multiple_gen_trig:
+            self._time_gen(False)
+
+        else:
+            self.single_signal_generation()
         return None
 
     def single_signal_generation(self):
@@ -51,24 +62,33 @@ class SignalGenerator:
     def multiple_signal_generation(self, parameters_list=0):
 
         first = True
-        self._multiple_gen_trig = True
+        self.multiple_freq = parameters_list
+
         for (freq, ampl) in parameters_list:
             if first:
                 self._signal = ampl * np.sin(2 * np.pi * freq * self._time)
+                self.freq_nam += str(freq)
                 first = False
             else:
                 self._signal += ampl * np.sin(2 * np.pi * freq * self._time)
-            print(freq, "\t", ampl)
+                self.freq_nam += ", " + str(freq)
 
+        self.freq_nam += ")"
         return None
 
     def plot_signal(self, show=False):
         fig, ax = plt.subplots()
         ax.set_ylabel("Amplitude")
         ax.set_xlabel("Time")
-        ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
-        ax.legend()
+
+        if self._multiple_gen_trig:
+            ax.plot(self._time, self._signal, label=self.freq_nam + " Hz")
+
+        else:
+            ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
+
         if show:
+            ax.legend()
             plt.show()
         return None
 
@@ -127,13 +147,13 @@ class SignalGenerator:
 
 
 def main():
-
-    sign1 = SignalGenerator(signal_start=2, signal_end=7, signal_ampl=7.5)
-    sign1.plot_signal(False)
-    sign1.set_signal_length(start=5, end=12)
-    sign1.set_signal_ampl(ampl=12)
-    sign1.set_signal_freq(freq=40)
+    sign1 = SignalGenerator(multiple_sine=[(2, 5), (12, 6), (7, 10)], signal_start=2, signal_end=7)
     sign1.plot_signal(True)
+#    sign1.set_signal_length(start=5, end=12)
+#    sign1.set_signal_ampl(ampl=12)
+#    sign1.set_signal_freq(freq=40)
+#    sign1.plot_signal(True)
+
 
 #    sign1.set_signal_freq(5)
 #    sign1.multiple_signal_generation([(2, 5), (12, 6) ,(7, 10)])
@@ -143,12 +163,12 @@ def main():
 #    sign2.set_signal_length(start=2, end=5)
 
 #    sign1.plot_signal(True)
-    # sign1.set_signal_ampl(10)
-    # sign2.set_signal_ampl(2.5)
-    #
-    # # sign1.plot_signal(False)
-    # # sign2.plot_signal(False)
-    # sign1.plot_multiple(sign2, True)
+# sign1.set_signal_ampl(10)
+# sign2.set_signal_ampl(2.5)
+#
+# # sign1.plot_signal(False)
+# # sign2.plot_signal(False)
+# sign1.plot_multiple(sign2, True)
 
 
 if __name__ == "__main__":
