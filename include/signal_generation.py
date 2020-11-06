@@ -24,11 +24,11 @@ class signalGenerator:
 
     def plot_signal(self, show=False):
         self._signal_generation()
+        fig, ax = plt.subplots()
+        ax.set_ylabel("Amplitude")
+        ax.set_xlabel("Time")
+        plt.plot(self._time, self._signal)
         if show:
-            fig, ax = plt.subplots()
-            ax.set_ylabel("Amplitude")
-            ax.set_xlabel("Time")
-            plt.plot(self._time, self._signal)
             plt.show()
         return None
 
@@ -71,16 +71,18 @@ def main():
 
     sign1.set_signal_freq(5)
     sign2.set_signal_freq(2.5)
-    sign1.set_signal_ampl(2)
-    sign2.set_signal_ampl(8)
+    sign1.set_signal_ampl(10)
+    sign2.set_signal_ampl(2.5)
 
-    sign1_x, sign1_y = sign1.get_signal_data()
-    sign2_x, sign2_y = sign2.get_signal_data()
-
-    fig, ax = plt.subplots()
-    ax.plot(sign1_x, sign1_y)
-    ax.plot(sign2_x, sign2_y)
-    plt.show()
+    sign1.plot_signal(False)
+    sign2.plot_signal(True)
+    # sign1_x, sign1_y = sign1.get_signal_data()
+    # sign2_x, sign2_y = sign2.get_signal_data()
+    #
+    # fig, ax = plt.subplots()
+    # ax.plot(sign1_x, sign1_y)
+    # ax.plot(sign2_x, sign2_y)
+    # plt.show()
 
 if __name__ == "__main__":
     main()
