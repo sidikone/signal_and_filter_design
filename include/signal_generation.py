@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math as m
 
+error1 = "end value must be greater than start value !"
+
 
 class SignalGenerator:
 
@@ -83,6 +85,21 @@ class SignalGenerator:
         self._signal_start = start
         self._signal_end = end
 
+        if self._signal_start > self._signal_end:
+            raise ValueError(error1)
+
+        # try:
+        #     self._signal_start = start
+        #     self._signal_end = end
+        #
+        #     self._signal_start>self._signal_start
+        #
+        # except ValueError:
+        #     raise RuntimeError
+
+        # if start>=end:
+        #     raise ValueError("signal end must be greater than signal start")
+
 
 def main():
     sign1 = SignalGenerator()
@@ -90,19 +107,14 @@ def main():
 
     sign1.set_signal_freq(5)
     sign2.set_signal_freq(2.5)
+    sign2.set_signal_length(start=2, end=5)
+
     sign1.set_signal_ampl(10)
     sign2.set_signal_ampl(2.5)
 
     # sign1.plot_signal(False)
-    # sign2.plot_signal(True)
+    # sign2.plot_signal(False)
     sign1.plot_multiple(sign2, True)
-    # sign1_x, sign1_y = sign1.get_signal_data()
-    # sign2_x, sign2_y = sign2.get_signal_data()
-    #
-    # fig, ax = plt.subplots()
-    # ax.plot(sign1_x, sign1_y)
-    # ax.plot(sign2_x, sign2_y)
-    # plt.show()
 
 
 if __name__ == "__main__":
