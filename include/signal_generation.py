@@ -55,7 +55,6 @@ class SignalGenerator:
         for (freq, ampl) in parameters_list:
             if first:
                 self._signal = ampl * np.sin(2 * np.pi * freq * self._time)
-                print("yeah")
                 first = False
             else:
                 self._signal += ampl * np.sin(2 * np.pi * freq * self._time)
