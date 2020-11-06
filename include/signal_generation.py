@@ -6,32 +6,46 @@ error1 = "end value must be greater than start value !"
 
 class SignalGenerator:
 
-    def __init__(self, sampling_freq=100, signal_freq=1, signal_ampl=1):
+    def __init__(self, sampling_freq=100, signal_freq=1, signal_ampl=1, signal_start=0, signal_end=1):
+
+        self._multiple_gen_trig = False
         self._sampling_freq = sampling_freq
         self._signal_freq = signal_freq
         self._signal_ampl = signal_ampl
+        self._signal_start = signal_start
+        self._signal_end = signal_end
+        if self._signal_start > self._signal_end:
+            raise ValueError(error1)
+        self._sampling_period = 1./self._sampling_freq
+        self._time = self._time_gen()
+        self._signal = self._amplitude_gen()
 
-        self._signal_start = 0
-        self._signal_end = 1
-        self._sampling_period = 1
-        self._time = 0
-        self._signal = 0
 
-        self._multiple_gen_trig = False
-        self.single_signal_generation()
-
-    def _time_gen(self):
+    def _time_gen(self, init=True):
         self._sampling_period = 1. / self._sampling_freq
-        self._time = np.arange(self._signal_start, self._signal_end + self._sampling_period, self._sampling_period)
-        return None
+        local_time = np.arange(self._signal_start, self._signal_end + self._sampling_period, self._sampling_period)
+        if init:
+            return local_time
+        else:
+            self._time = local_time
+            return None
 
-    def _amplitude_gen(self):
-        self._signal = self._signal_ampl * np.sin(2 * np.pi * self._signal_freq * self._time)
+
+    def _amplitude_gen(self, init=True):
+        local_signal = self._signal_ampl * np.sin(2 * np.pi * self._signal_freq * self._time)
+        if init:
+            return local_signal
+        else:
+            self._signal = local_signal
+            return None
+
+    def signal_generation(self):
+        self.single_signal_generation()
         return None
 
     def single_signal_generation(self):
-        self._time_gen()
-        self._amplitude_gen()
+        self._time_gen(False)
+        self._amplitude_gen(False)
         return None
 
     def multiple_signal_generation(self, parameters_list=0):
@@ -50,8 +64,6 @@ class SignalGenerator:
         return None
 
     def plot_signal(self, show=False):
-        if not self._multiple_gen_trig:
-            self.single_signal_generation()
         fig, ax = plt.subplots()
         ax.set_ylabel("Amplitude")
         ax.set_xlabel("Time")
@@ -97,34 +109,41 @@ class SignalGenerator:
     # setter methods
     def set_sample_freq(self, freq):
         self._sampling_freq = freq
-        self._time_gen()
+        self.signal_generation()
 
     def set_signal_freq(self, freq):
         self._signal_freq = freq
-        self._time_gen()
+        self.signal_generation()
 
     def set_signal_ampl(self, ampl):
         self._signal_ampl = ampl
-        self._amplitude_gen()
+        self.signal_generation()
 
     def set_signal_length(self, start=0, end=1):
         self._signal_start = start
         self._signal_end = end
         if self._signal_start > self._signal_end:
             raise ValueError(error1)
-        self._time_gen()
+        self.signal_generation()
 
 
 def main():
-    sign1 = SignalGenerator()
-    sign1.set_signal_freq(5)
-    sign1.multiple_signal_generation([(2, 5), (12, 6) ,(7, 10)])
 
-    sign2 = SignalGenerator()
-    sign2.set_signal_freq(2.5)
-    sign2.set_signal_length(start=2, end=5)
-
+    sign1 = SignalGenerator(signal_start=2, signal_end=7, signal_ampl=7.5)
+    sign1.plot_signal(False)
+    sign1.set_signal_length(start=5, end=12)
+    sign1.set_signal_ampl(ampl=12)
+    sign1.set_signal_freq(freq=40)
     sign1.plot_signal(True)
+
+#    sign1.set_signal_freq(5)
+#    sign1.multiple_signal_generation([(2, 5), (12, 6) ,(7, 10)])
+
+#    sign2 = SignalGenerator()
+#    sign2.set_signal_freq(2.5)
+#    sign2.set_signal_length(start=2, end=5)
+
+#    sign1.plot_signal(True)
     # sign1.set_signal_ampl(10)
     # sign2.set_signal_ampl(2.5)
     #
