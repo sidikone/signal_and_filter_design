@@ -3,7 +3,7 @@ import numpy as np
 import math as m
 
 
-class signalGenerator:
+class SignalGenerator:
 
     def __init__(self, sampling_freq=100, signal_freq=1, signal_ampl=1):
         self._sampling_freq = sampling_freq
@@ -12,6 +12,9 @@ class signalGenerator:
 
         self._signal_start = 0
         self._signal_end = 1
+        self._sampling_period = 1
+        self._time = 0
+        self._signal = 0
 
         self.signal_generation()
 
@@ -27,7 +30,7 @@ class signalGenerator:
         fig, ax = plt.subplots()
         ax.set_ylabel("Amplitude")
         ax.set_xlabel("Time")
-        ax.plot(self._time, self._signal, label=str(self._signal_freq)+" Hz")
+        ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
         ax.legend()
         if show:
             plt.show()
@@ -41,14 +44,13 @@ class signalGenerator:
         fig, ax = plt.subplots()
         ax.set_ylabel("Amplitude")
         ax.set_xlabel("Time")
-        ax.plot(self._time, self._signal, label=str(self._signal_freq)+ " Hz")
-        ax.plot(other_time, other_signal, label=str(other.get_signal_freq())+ " Hz")
+        ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
+        ax.plot(other_time, other_signal, label=str(other.get_signal_freq()) + " Hz")
 
         ax.legend()
         if show:
             plt.show()
         return None
-
 
     # getter methods
     def get_sample_freq(self):
@@ -82,10 +84,9 @@ class signalGenerator:
         self._signal_end = end
 
 
-
 def main():
-    sign1 = signalGenerator()
-    sign2 = signalGenerator()
+    sign1 = SignalGenerator()
+    sign2 = SignalGenerator()
 
     sign1.set_signal_freq(5)
     sign2.set_signal_freq(2.5)
@@ -94,7 +95,7 @@ def main():
 
     # sign1.plot_signal(False)
     # sign2.plot_signal(True)
-    sign1.plot_multiple(sign2,True)
+    sign1.plot_multiple(sign2, True)
     # sign1_x, sign1_y = sign1.get_signal_data()
     # sign2_x, sign2_y = sign2.get_signal_data()
     #
@@ -103,7 +104,6 @@ def main():
     # ax.plot(sign2_x, sign2_y)
     # plt.show()
 
+
 if __name__ == "__main__":
     main()
-
-
