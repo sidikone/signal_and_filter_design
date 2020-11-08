@@ -84,11 +84,40 @@ class SignalGenerator:
 
         return None
 
+    def random_multiple_signal_generation(self, min_freq, max_frq, min_ampl, max_ampl, siz_data):
+        self._multiple_gen_trig = True
+        freq_data = self._generate_random_freq(min_value=min_freq, max_value=max_frq, siz_value=siz_data)
+        ampl_data = self._generate_random_ampl(min_value=min_ampl, max_value=max_ampl, siz_value=siz_data)
+
+        ampl_and_freq = []
+        for ind, freq in enumerate(freq_data):
+            ampl_and_freq.append((freq, ampl_data[ind]))
+
+        self.multiple_signal_generation(ampl_and_freq)
+
+
+        return None
+
     def add_noise(self, std):
 
         self.noise = std
         self.noise_signal = self._signal + std*np.random.randn(len(self._time))
         return None
+
+    @staticmethod
+    def _generate_random_freq(min_value, max_value, siz_value):
+
+        std_value = (max_value - min_value)/2
+        mean_value = (min_value + max_value) / 2
+
+        data_out = std_value * np.random.randn(siz_value) + mean_value
+        data_out = np.abs(np.round(data_out, 2))
+        return data_out
+
+    @staticmethod
+    def _generate_random_ampl(min_value, max_value, siz_value):
+
+        return np.random.random_integers(min_value, max_value, siz_value)
 
     def plot_signal(self, show=False):
         fig, ax = plt.subplots()
@@ -164,12 +193,20 @@ class SignalGenerator:
 
 
 def main():
-    sign1 = SignalGenerator(multiple_sine=[(0.2, 5), (1.25, 6), (0.75, 3)], sampling_freq=50, signal_start=0, signal_end=10)
+    sign1 = SignalGenerator(sampling_freq=50, signal_start=0, signal_end=10)
 #    sign1 = SignalGenerator(sampling_freq=500, signal_freq=2, signal_ampl=10, signal_start=0, signal_end=1)
 #    sign1.plot_signal(False)
-    sign1.set_signal_length(start=1, end=15)
-    sign1.add_noise(5)
+#    sign1.set_signal_length(start=1, end=15)
+#    sign1.add_noise(5)
+#    sign1.plot_signal(True)
+
+    sign1.random_multiple_signal_generation(min_freq=0, max_frq=.5, min_ampl=2, max_ampl=50, siz_data=10)
+    sign1.set_signal_length(start=0, end=30.0)
+    sign1.add_noise(9)
     sign1.plot_signal(True)
+
+
+
 #    sign1.set_signal_ampl(ampl=12)
 #    sign1.set_signal_freq(freq=40)
 #    sign1.plot_signal(True)
@@ -193,3 +230,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+ #   print(np.random.random_integers(0, 5, 5))
+ #   print(np.random.random_integers(0, 5, 5))
+ #   print(3*np.random.randn(5)+10)
