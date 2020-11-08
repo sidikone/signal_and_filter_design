@@ -15,6 +15,8 @@ class SignalGenerator:
         if self._signal_start > self._signal_end:
             raise ValueError(error1)
         self._time = self._time_gen(True)
+        self.noise = 0
+        self.noise_signal = 0
 
         if len(multiple_sine) == 0:
             self._sampling_period = 1. / self._sampling_freq
@@ -24,7 +26,7 @@ class SignalGenerator:
 
         else:
             self._multiple_gen_trig = True
-            self.freq_nam = "("
+#            self.freq_nam = "("
             self.multiple_freq = []
             self.multiple_signal_generation(multiple_sine)
 
@@ -66,13 +68,13 @@ class SignalGenerator:
         for (freq, ampl) in self.multiple_freq:
             if first:
                 self._signal = ampl * np.sin(2 * np.pi * freq * self._time)
-                self.freq_nam += str(freq)
+#                self.freq_nam += str(freq)
                 first = False
             else:
                 self._signal += ampl * np.sin(2 * np.pi * freq * self._time)
-                self.freq_nam += ", " + str(freq)
+#                self.freq_nam += ", " + str(freq)
 
-        self.freq_nam += ")"
+#        self.freq_nam += ")"
         return None
 
     def multiple_signal_generation(self, parameters_list=0):
@@ -82,15 +84,24 @@ class SignalGenerator:
 
         return None
 
+    def add_noise(self, std):
+
+        self.noise = std
+        self.noise_signal = self._signal + std*np.random.randn(len(self._time))
+        return None
+
     def plot_signal(self, show=False):
         fig, ax = plt.subplots()
         ax.set_ylabel("Amplitude")
         ax.set_xlabel("Time")
 
         if self._multiple_gen_trig:
-            ax.plot(self._time, self._signal, label=self.freq_nam + " Hz")
+            ax.plot(self._time, self.noise_signal, label=" Hz")
+            ax.plot(self._time, self._signal, label=" Hz")
+#            ax.plot(self._time, self._signal, label=self.freq_nam + " Hz")
 
         else:
+            ax.plot(self._time, self.noise_signal, label="noise")
             ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
 
         if show:
@@ -153,9 +164,11 @@ class SignalGenerator:
 
 
 def main():
-    sign1 = SignalGenerator(multiple_sine=[(2, 5), (12, 6), (7, 10)], signal_start=2, signal_end=7)
+    sign1 = SignalGenerator(multiple_sine=[(0.2, 5), (1.25, 6), (0.75, 3)], sampling_freq=50, signal_start=0, signal_end=10)
+#    sign1 = SignalGenerator(sampling_freq=500, signal_freq=2, signal_ampl=10, signal_start=0, signal_end=1)
 #    sign1.plot_signal(False)
-    sign1.set_signal_length(start=5, end=12)
+    sign1.set_signal_length(start=1, end=15)
+    sign1.add_noise(5)
     sign1.plot_signal(True)
 #    sign1.set_signal_ampl(ampl=12)
 #    sign1.set_signal_freq(freq=40)
