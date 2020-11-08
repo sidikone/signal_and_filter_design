@@ -14,19 +14,19 @@ class SignalGenerator:
         self._signal_end = signal_end
         if self._signal_start > self._signal_end:
             raise ValueError(error1)
-        self._time = self._time_gen()
+        self._time = self._time_gen(True)
 
         if len(multiple_sine) == 0:
             self._sampling_period = 1. / self._sampling_freq
             self._signal_freq = signal_freq
             self._signal_ampl = signal_ampl
-            self._signal = self._amplitude_gen()
+            self._signal = self._amplitude_gen(True)
 
         else:
             self._multiple_gen_trig = True
             self.freq_nam = "("
-            self.multiple_signal_generation(multiple_sine)
             self.multiple_freq = []
+            self.multiple_signal_generation(multiple_sine)
 
     def _time_gen(self, init=True):
         self._sampling_period = 1. / self._sampling_freq
@@ -49,6 +49,7 @@ class SignalGenerator:
 
         if self._multiple_gen_trig:
             self._time_gen(False)
+            self._m_signal_generation()
 
         else:
             self.single_signal_generation()
@@ -59,12 +60,10 @@ class SignalGenerator:
         self._amplitude_gen(False)
         return None
 
-    def multiple_signal_generation(self, parameters_list=0):
+    def _m_signal_generation(self):
 
         first = True
-        self.multiple_freq = parameters_list
-
-        for (freq, ampl) in parameters_list:
+        for (freq, ampl) in self.multiple_freq:
             if first:
                 self._signal = ampl * np.sin(2 * np.pi * freq * self._time)
                 self.freq_nam += str(freq)
@@ -74,6 +73,13 @@ class SignalGenerator:
                 self.freq_nam += ", " + str(freq)
 
         self.freq_nam += ")"
+        return None
+
+    def multiple_signal_generation(self, parameters_list=0):
+
+        self.multiple_freq = parameters_list
+        self._m_signal_generation()
+
         return None
 
     def plot_signal(self, show=False):
@@ -148,8 +154,9 @@ class SignalGenerator:
 
 def main():
     sign1 = SignalGenerator(multiple_sine=[(2, 5), (12, 6), (7, 10)], signal_start=2, signal_end=7)
+#    sign1.plot_signal(False)
+    sign1.set_signal_length(start=5, end=12)
     sign1.plot_signal(True)
-#    sign1.set_signal_length(start=5, end=12)
 #    sign1.set_signal_ampl(ampl=12)
 #    sign1.set_signal_freq(freq=40)
 #    sign1.plot_signal(True)
