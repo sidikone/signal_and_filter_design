@@ -2,7 +2,56 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from scipy.fft import fft
+
 error1 = "end value must be greater than start value !"
+
+
+class SpectralAnalysis:
+
+    def __init__(self, other):
+
+        self._amplitude = 0
+        self._frequencies = 0
+        self.frequency_data = pd.DataFrame()
+
+        if type(other) == type(pd.DataFrame()):
+            print("yeah")
+            self.data = other.copy()
+            self.sampling_freq, self.sampling_period = self._get_sampling_info(self.data)
+
+        else:
+            print("yolo")
+            self.data = other.get_data_into_pandas_format()
+            self.sampling_freq, self.sampling_period = self._get_sampling_info(self.data)
+
+    def _compute_timedelta(self, data):
+        diff = data.index.to_series().diff()
+        #        time_delta = [time.total_seconds() for time in diff]
+        #        return time_delta[1:]
+        return diff[1:]
+
+    def _get_sampling_info(self, data):
+        time_delta = self._compute_timedelta(data)
+        dt = np.round(np.median(time_delta), 2)
+        fs = np.round(1 / dt, 2)
+
+        return fs, dt
+
+    def compute_fourier_spectrum(self):
+        for col in self.data.columns.values:
+
+            new=fft(self.data[col].values)
+            _lines, _cols = self.data.shape
+            xf = np.linspace(0.0, 1.0 / (2.0 * self.sampling_period), _lines // 2)
+            new = 2/_lines * np.abs(new[0:_lines//2])
+            fig, ax = plt.subplots()
+            ax.plot(xf, new)
+
+
+
+
+
 
 
 class SignalGenerator:
@@ -122,40 +171,40 @@ class SignalGenerator:
 
         return np.random.random_integers(min_value, max_value, siz_value)
 
-#    def plot_signal(self, show=False):
-#        fig, ax = plt.subplots()
-#        ax.set_ylabel("Amplitude")
-#        ax.set_xlabel("Time")
+    #    def plot_signal(self, show=False):
+    #        fig, ax = plt.subplots()
+    #        ax.set_ylabel("Amplitude")
+    #        ax.set_xlabel("Time")
 
-#        if self._multiple_gen_trig:
-#            ax.plot(self._time, self.noise_signal, label=" Hz")
-#            ax.plot(self._time, self._signal, label=" Hz")
-#        #            ax.plot(self._time, self._signal, label=self.freq_nam + " Hz")
+    #        if self._multiple_gen_trig:
+    #            ax.plot(self._time, self.noise_signal, label=" Hz")
+    #            ax.plot(self._time, self._signal, label=" Hz")
+    #        #            ax.plot(self._time, self._signal, label=self.freq_nam + " Hz")
 
-#        else:
-#            ax.plot(self._time, self.noise_signal, label="noise")
-#            ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
+    #        else:
+    #            ax.plot(self._time, self.noise_signal, label="noise")
+    #            ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
 
-#        if show:
-#            ax.legend()
-#            plt.show()
-#        return None
+    #        if show:
+    #            ax.legend()
+    #            plt.show()
+    #        return None
 
-#    def plot_multiple(self, other, show=False):
-#        self.single_signal_generation()
-#        other.single_signal_generation()
-#        other_time, other_signal = other.get_signal_data()
+    #    def plot_multiple(self, other, show=False):
+    #        self.single_signal_generation()
+    #        other.single_signal_generation()
+    #        other_time, other_signal = other.get_signal_data()
 
-#        fig, ax = plt.subplots()
-#        ax.set_ylabel("Amplitude")
-#        ax.set_xlabel("Time")
-#        ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
-#        ax.plot(other_time, other_signal, label=str(other.get_signal_freq()) + " Hz")
+    #        fig, ax = plt.subplots()
+    #        ax.set_ylabel("Amplitude")
+    #        ax.set_xlabel("Time")
+    #        ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
+    #        ax.plot(other_time, other_signal, label=str(other.get_signal_freq()) + " Hz")
 
-#        ax.legend()
-#        if show:
-#            plt.show()
-#        return None
+    #        ax.legend()
+    #        if show:
+    #            plt.show()
+    #        return None
 
     # getter methods
     def get_sample_freq(self):
@@ -206,20 +255,34 @@ class SignalGenerator:
 
 
 def main():
-    sign1 = SignalGenerator(sampling_freq=50, signal_start=0, signal_end=10)
+    sign1 = SignalGenerator(sampling_freq=190, signal_start=0, signal_end=10, multiple_sine=[(50, 5), (12, 6), (7, 10)])
+    print(80//2)
     #    sign1 = SignalGenerator(sampling_freq=500, signal_freq=2, signal_ampl=10, signal_start=0, signal_end=1)
     #    sign1.plot_signal(False)
     #    sign1.set_signal_length(start=1, end=15)
     #    sign1.add_noise(5)
     #    sign1.plot_signal(True)
 
-    sign1.random_multiple_signal_generation(min_freq=0, max_frq=.5, min_ampl=2, max_ampl=50, siz_data=10)
-    sign1.set_signal_length(start=0, end=30.0)
-    sign1.add_noise(9)
+#    sign1.random_multiple_signal_generation(min_freq=1, max_frq=5, min_ampl=2, max_ampl=50, siz_data=5)
+#    sign1.set_signal_length(start=0, end=30.0)
+#    sign1.add_noise(9)
     data1 = sign1.get_data_into_pandas_format()
+
+    keke = type(data1)
+    kaka = type(sign1)
+    print(keke)
+    print(kaka)
+
+    print(data1.columns.values)
+
+    spect1 = SpectralAnalysis(data1)
+
+    spect1.compute_fourier_spectrum()
 
     data1.plot()
     plt.show()
+
+
 #    sign1.plot_signal(True)
 
 
