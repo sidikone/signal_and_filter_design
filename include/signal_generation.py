@@ -122,40 +122,40 @@ class SignalGenerator:
 
         return np.random.random_integers(min_value, max_value, siz_value)
 
-    def plot_signal(self, show=False):
-        fig, ax = plt.subplots()
-        ax.set_ylabel("Amplitude")
-        ax.set_xlabel("Time")
+#    def plot_signal(self, show=False):
+#        fig, ax = plt.subplots()
+#        ax.set_ylabel("Amplitude")
+#        ax.set_xlabel("Time")
 
-        if self._multiple_gen_trig:
+#        if self._multiple_gen_trig:
 #            ax.plot(self._time, self.noise_signal, label=" Hz")
-            ax.plot(self._time, self._signal, label=" Hz")
-        #            ax.plot(self._time, self._signal, label=self.freq_nam + " Hz")
+#            ax.plot(self._time, self._signal, label=" Hz")
+#        #            ax.plot(self._time, self._signal, label=self.freq_nam + " Hz")
 
-        else:
+#        else:
 #            ax.plot(self._time, self.noise_signal, label="noise")
-            ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
+#            ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
 
-        if show:
-            ax.legend()
-            plt.show()
-        return None
+#        if show:
+#            ax.legend()
+#            plt.show()
+#        return None
 
-    def plot_multiple(self, other, show=False):
-        self.single_signal_generation()
-        other.single_signal_generation()
-        other_time, other_signal = other.get_signal_data()
+#    def plot_multiple(self, other, show=False):
+#        self.single_signal_generation()
+#        other.single_signal_generation()
+#        other_time, other_signal = other.get_signal_data()
 
-        fig, ax = plt.subplots()
-        ax.set_ylabel("Amplitude")
-        ax.set_xlabel("Time")
-        ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
-        ax.plot(other_time, other_signal, label=str(other.get_signal_freq()) + " Hz")
+#        fig, ax = plt.subplots()
+#        ax.set_ylabel("Amplitude")
+#        ax.set_xlabel("Time")
+#        ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
+#        ax.plot(other_time, other_signal, label=str(other.get_signal_freq()) + " Hz")
 
-        ax.legend()
-        if show:
-            plt.show()
-        return None
+#        ax.legend()
+#        if show:
+#            plt.show()
+#        return None
 
     # getter methods
     def get_sample_freq(self):
@@ -217,8 +217,10 @@ def main():
     sign1.set_signal_length(start=0, end=30.0)
     sign1.add_noise(9)
     data1 = sign1.get_data_into_pandas_format()
-    print(data1.head(3))
-    sign1.plot_signal(True)
+
+    data1.plot()
+    plt.show()
+#    sign1.plot_signal(True)
 
 
 #    sign1.set_signal_ampl(ampl=12)
