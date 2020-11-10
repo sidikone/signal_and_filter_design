@@ -4,6 +4,7 @@ import pandas as pd
 
 error1 = "end value must be greater than start value !"
 
+
 class SignalGenerator:
 
     def __init__(self, sampling_freq=100, signal_freq=1, signal_ampl=1, signal_start=0, signal_end=1, multiple_sine=[]):
@@ -121,41 +122,6 @@ class SignalGenerator:
 
         return np.random.random_integers(min_value, max_value, siz_value)
 
-    #    def plot_signal(self, show=False):
-    #        fig, ax = plt.subplots()
-    #        ax.set_ylabel("Amplitude")
-    #        ax.set_xlabel("Time")
-
-    #        if self._multiple_gen_trig:
-    #            ax.plot(self._time, self.noise_signal, label=" Hz")
-    #            ax.plot(self._time, self._signal, label=" Hz")
-    #        #            ax.plot(self._time, self._signal, label=self.freq_nam + " Hz")
-
-    #        else:
-    #            ax.plot(self._time, self.noise_signal, label="noise")
-    #            ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
-
-    #        if show:
-    #            ax.legend()
-    #            plt.show()
-    #        return None
-
-    #    def plot_multiple(self, other, show=False):
-    #        self.single_signal_generation()
-    #        other.single_signal_generation()
-    #        other_time, other_signal = other.get_signal_data()
-
-    #        fig, ax = plt.subplots()
-    #        ax.set_ylabel("Amplitude")
-    #        ax.set_xlabel("Time")
-    #        ax.plot(self._time, self._signal, label=str(self._signal_freq) + " Hz")
-    #        ax.plot(other_time, other_signal, label=str(other.get_signal_freq()) + " Hz")
-
-    #        ax.legend()
-    #        if show:
-    #            plt.show()
-    #        return None
-
     # getter methods
     def get_sample_freq(self):
         return self._sampling_freq
@@ -205,30 +171,15 @@ class SignalGenerator:
 
 
 def main():
-    sign1 = SignalGenerator(sampling_freq=190, signal_start=0, signal_end=10, multiple_sine=[(50, 5), (12, 6), (7, 10)])
-    print(80//2)
+    sign1 = SignalGenerator(sampling_freq=100, signal_start=0, signal_end=3,
+                            multiple_sine=[(.5, 5), (.25, 6), (.75, 10)])
     #    sign1 = SignalGenerator(sampling_freq=500, signal_freq=2, signal_ampl=10, signal_start=0, signal_end=1)
-    #    sign1.plot_signal(False)
-    #    sign1.set_signal_length(start=1, end=15)
-    #    sign1.add_noise(5)
-    #    sign1.plot_signal(True)
 
-#    sign1.random_multiple_signal_generation(min_freq=1, max_frq=5, min_ampl=2, max_ampl=50, siz_data=5)
-#    sign1.set_signal_length(start=0, end=30.0)
-#    sign1.add_noise(9)
+    #    sign1.random_multiple_signal_generation(min_freq=1, max_frq=5, min_ampl=2, max_ampl=50, siz_data=5)
+    #    sign1.set_signal_length(start=0, end=30.0)
+    sign1.add_noise(5)
     data1 = sign1.get_data_into_pandas_format()
-
-    keke = type(data1)
-    kaka = type(sign1)
-    print(keke)
-    print(kaka)
-
-    print(data1.columns.values)
-
-    spect1 = SpectralAnalysis(data1)
-
-    spect1.compute_fourier_spectrum()
-
+    print(data1.head(3))
     data1.plot()
     plt.show()
 
@@ -259,6 +210,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-#   print(np.random.random_integers(0, 5, 5))
-#   print(np.random.random_integers(0, 5, 5))
-#   print(3*np.random.randn(5)+10)
