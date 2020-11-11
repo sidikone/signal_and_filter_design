@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from scipy.fft import fft
+from scipy.signal import periodogram
 
 
 class SpectralAnalysis:
@@ -44,6 +45,12 @@ class SpectralAnalysis:
         fft_values = (2 / _lines) * np.abs(fft_values[0:_lines // 2])
         return fft_values
 
+    def _compute_periodogram(self, col_in, typ=None):
+        freq_out, ampl_out = periodogram(self.data[col_in].values, self.sampling_freq)
+        if typ is not None:
+            freq_out, ampl_out = periodogram(self.data[col_in].values, self.sampling_freq, scaling='spectrum')
+        return freq_out, ampl_out
+
     def compute_fourier_spectrum(self, typ=None):
 
         self._frequencies = self._compute_frequencies()
@@ -54,16 +61,33 @@ class SpectralAnalysis:
             for col in self.data.columns.values:
                 self._amplitudes_dB.append(20 * np.log10(self._compute_fft(col)))
 
-        self.get_data_into_pandas_format(typ=typ)
+        self.get_data_into_pandas_format(add_suffix='(dB)', typ=typ)
         return self.dataFrame
 
-    def get_data_into_pandas_format(self, typ):
+    def compute_spectral_density_using_periodogram(self, typ=None):
+
+        for col in self.data.columns.values:
+            freq, ampl = self._compute_periodogram(col_in=col)
+            self._amplitudes.append(ampl)
+
+        if typ is not None:
+            for col in self.data.columns.values:
+                freq, ampl = self._compute_periodogram(col_in=col, typ=typ)
+                self._amplitudes_dB.append(ampl)
+
+        self._frequencies = freq
+        self.get_data_into_pandas_format(add_suffix='(spectral)', typ=typ)
+        return self.dataFrame
+
+    #        periodogram()
+
+    def get_data_into_pandas_format(self, add_suffix, typ=None):
 
         self.dataFrame = pd.DataFrame({'Frequencies': self._frequencies})
         for ind, col in enumerate(self.data.columns.values):
             self.dataFrame[col] = self._amplitudes[ind]
         if typ is not None:
             for ind, col in enumerate(self.data.columns.values):
-                self.dataFrame[col+"(dB)"] = self._amplitudes_dB[ind]
+                self.dataFrame[col + add_suffix] = self._amplitudes_dB[ind]
 
         self.dataFrame = self.dataFrame.set_index('Frequencies')

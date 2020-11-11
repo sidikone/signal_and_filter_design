@@ -104,7 +104,8 @@ class SignalGenerator:
 
         self._noise_trig = True
         self.noise = std
-        self.noise_signal = self._signal + std * np.random.randn(len(self._time))
+#        self.noise_signal = self._signal + std * np.random.randn(len(self._time))
+        self.noise_signal = self._signal + np.random.normal(scale=np.sqrt(std), size=len(self._time))
         return None
 
     @staticmethod
