@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from scipy.fft import fft
 from scipy.signal import periodogram
+from scipy.signal import welch
 
 
 class SpectralAnalysis:
@@ -51,6 +52,12 @@ class SpectralAnalysis:
             freq_out, ampl_out = periodogram(self.data[col_in].values, self.sampling_freq, scaling='spectrum')
         return freq_out, ampl_out
 
+    def _compute_welch(self, col_in, typ=None):
+        freq_out, ampl_out = welch(self.data[col_in].values, self.sampling_freq)
+        if typ is not None:
+            freq_out, ampl_out = welch(self.data[col_in].values, self.sampling_freq, scaling='spectrum')
+        return freq_out, ampl_out
+
     def compute_fourier_spectrum(self, typ=None):
 
         self._frequencies = self._compute_frequencies()
@@ -79,7 +86,20 @@ class SpectralAnalysis:
         self.get_data_into_pandas_format(add_suffix='(spectral)', typ=typ)
         return self.dataFrame
 
-    #        periodogram()
+    def compute_spectral_density_using_welch(self, typ=None):
+
+        for col in self.data.columns.values:
+            freq, ampl = self._compute_welch(col_in=col)
+            self._amplitudes.append(ampl)
+
+        if typ is not None:
+            for col in self.data.columns.values:
+                freq, ampl = self._compute_welch(col_in=col, typ=typ)
+                self._amplitudes_dB.append(ampl)
+
+        self._frequencies = freq
+        self.get_data_into_pandas_format(add_suffix='(spectral)', typ=typ)
+        return self.dataFrame
 
     def get_data_into_pandas_format(self, add_suffix, typ=None):
 
