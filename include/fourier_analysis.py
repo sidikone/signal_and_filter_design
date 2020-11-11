@@ -66,7 +66,7 @@ class SpectralAnalysis:
 
         if typ is not None:
             for col in self.data.columns.values:
-                self._amplitudes_dB.append(20 * np.log10(self._compute_fft(col)))
+                self._amplitudes_dB.append(20 * np.log10(abs(self._compute_fft(col))))
 
         self.get_data_into_pandas_format(add_suffix='(dB)', typ=typ)
         return self.dataFrame

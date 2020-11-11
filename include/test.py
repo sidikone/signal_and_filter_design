@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from signal_generation import SignalGenerator
 from fourier_analysis import SpectralAnalysis
+from signal_filter import iirFilter
 
 
 def main():
@@ -10,7 +11,6 @@ def main():
     sign1.add_noise(2.5)
     data1 = sign1.get_data_into_pandas_format()
     data1.plot()
-
     spec1 = SpectralAnalysis(sign1)
 #    data2 = spec1.compute_fourier_spectrum()
 #    data2.plot()
@@ -25,6 +25,10 @@ def main():
     data5 = spec1.compute_spectral_density_using_welch(typ='dB')
     data5.plot()
     plt.show()
+
+    dat = iirFilter(50, 1, 5, 1, 40)
+    dat.compute_frequency_response()
+    print(dat.design_filter())
 
 
 if __name__ == "__main__":
