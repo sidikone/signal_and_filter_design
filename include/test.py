@@ -6,10 +6,11 @@ from signal_filter import iirFilter
 
 def main():
 
-    sign1 = SignalGenerator(sampling_freq=50, signal_start=5, signal_end=100,
+    sign1 = SignalGenerator(sampling_freq=50, signal_start=0, signal_end=10,
                             multiple_sine=[(.1, 5), (.5, 2.5), (.75, 10)])
-    sign1.add_noise(2.5)
+    sign1.add_noise(5)
     data1 = sign1.get_data_into_pandas_format()
+    print(data1.shape)
     data1.plot()
     spec1 = SpectralAnalysis(sign1)
 #    data2 = spec1.compute_fourier_spectrum()
@@ -26,9 +27,16 @@ def main():
     data5.plot()
     plt.show()
 
-    dat = iirFilter(50, 1, 5, 1, 40)
-    dat.compute_frequency_response()
-    print(dat.design_filter())
+    print(data5.shape)
+
+    dat = iirFilter(sampling_freq=50,
+                    low_freq=5,
+                    high_freq=10,
+                    attenuation_pass=1,
+                    attenuation_stop=80,
+                    typ='cheby2')
+
+    dat.compute_frequency_response(sampling_res=.05, display=True)
 
 
 if __name__ == "__main__":
