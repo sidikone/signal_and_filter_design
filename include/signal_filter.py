@@ -1,4 +1,6 @@
 from scipy.signal import iirdesign
+from scipy.signal import filtfilt
+
 from scipy.signal import freqz
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,9 +20,11 @@ class iirFilter:
         self._g_stop = attenuation_stop
         self.typ = typ
 
+        self._amplitudes = []
         self.b_coeff = 0
         self.a_coeff = 0
-
+        self.data = 0
+        self.dataFrame = 0
         self.frequencies = 0
         self.ampl = 0
 
@@ -35,6 +39,11 @@ class iirFilter:
 
         self.b_coeff, self.a_coeff = filter_coeff
         return self.b_coeff, self.a_coeff
+
+    def _compute_iir_filter(self, col_in):
+
+        data_out = filtfilt(self.b_coeff, self.a_coeff, self.data[col_in].values)
+        return data_out
 
     def compute_frequency_response(self, sampling_res=1, display=False):
 
@@ -58,3 +67,26 @@ class iirFilter:
         data_out = pd.DataFrame({'frequencies': self.frequencies, 'amplitude (dB)': self.ampl})
         data_out = data_out.set_index('frequencies')
         return data_out
+
+    def apply_filter(self, other):
+
+        if type(other) == type(pd.DataFrame()):
+            self.data = other.copy()
+
+        else:
+            self.data = other.get_data_into_pandas_format()
+
+        for col in self.data.columns.values:
+            self._amplitudes.append(self._compute_iir_filter(col))
+
+        self.get_data_into_pandas_format()
+        return self.dataFrame
+
+    def get_data_into_pandas_format(self):
+
+        self.dataFrame = pd.DataFrame({'Timestamp': self.data.index.values})
+        for ind, col in enumerate(self.data.columns.values):
+            self.dataFrame[col + '(filtered)'] = self._amplitudes[ind]
+
+        self.dataFrame = self.dataFrame.set_index('Timestamp')
+        return None

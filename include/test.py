@@ -10,7 +10,6 @@ def main():
                             multiple_sine=[(.1, 5), (.5, 2.5), (.75, 10)])
     sign1.add_noise(5)
     data1 = sign1.get_data_into_pandas_format()
-    print(data1.shape)
     data1.plot()
     spec1 = SpectralAnalysis(sign1)
 #    data2 = spec1.compute_fourier_spectrum()
@@ -25,9 +24,7 @@ def main():
 
     data5 = spec1.compute_spectral_density_using_welch(typ='dB')
     data5.plot()
-    plt.show()
-
-    print(data5.shape)
+#    plt.show()
 
     dat = iirFilter(sampling_freq=50,
                     low_freq=5,
@@ -36,7 +33,10 @@ def main():
                     attenuation_stop=80,
                     typ='cheby2')
 
-    dat.compute_frequency_response(sampling_res=.05, display=True)
+    dat.compute_frequency_response(sampling_res=.05, display=False)
+    data6 = dat.apply_filter(data1)
+    data6.plot()
+    plt.show()
 
 
 if __name__ == "__main__":
