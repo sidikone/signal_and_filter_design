@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from signal_generation import SignalGenerator
 from fourier_analysis import SpectralAnalysis
 from signal_filter import iirFilter
+from signal_filter import firFilter
 
 
 def main():
@@ -36,6 +37,16 @@ def main():
     dat.compute_frequency_response(sampling_res=.05, display=False)
     data6 = dat.apply_filter(data1)
     data6.plot()
+
+    dat2 = firFilter(num_taps=50,
+                     cut_off=1.5,
+                     width=5.0,
+                     window=('gaussian', 11),
+                     fs=50)
+    did = dat2.compute_frequency_response(sampling_res=.05, display=False)
+    dodo = dat2.apply_filter(data1)
+    dodo.plot()
+    print(did.head(5))
     plt.show()
 
 
