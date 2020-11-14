@@ -7,8 +7,8 @@ from signal_filter import firFilter
 
 def main():
 
-    sign1 = SignalGenerator(sampling_freq=50, signal_start=0, signal_end=10,
-                            multiple_sine=[(.1, 5), (.5, 2.5), (.75, 10)])
+    sign1 = SignalGenerator(sampling_freq=500, signal_start=0, signal_end=10,
+                            multiple_sine=[(2, 5), (50, 25), (20, 10)])
     sign1.add_noise(5)
     data1 = sign1.get_data_into_pandas_format()
     data1.plot()
@@ -23,7 +23,8 @@ def main():
 #    data4.plot()
 #    data3.plot()
 
-    data5 = spec1.compute_spectral_density_using_welch(typ='dB')
+    data5 = spec1.compute_spectral_density_using_welch(sampling_res=.5)
+    print(data5.head(3))
     data5.plot()
 #    plt.show()
 
@@ -51,6 +52,5 @@ def main():
 
 
 if __name__ == "__main__":
-    import sys
-    print(sys.path)
+    print('\t\t test include')
     main()

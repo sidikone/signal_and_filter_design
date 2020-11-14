@@ -52,10 +52,10 @@ class SpectralAnalysis:
             freq_out, ampl_out = periodogram(self.data[col_in].values, self.sampling_freq, scaling='spectrum')
         return freq_out, ampl_out
 
-    def _compute_welch(self, col_in, typ=None):
-        freq_out, ampl_out = welch(self.data[col_in].values, self.sampling_freq)
+    def _compute_welch(self, col_in, nb_sampl=256, typ=None):
+        freq_out, ampl_out = welch(x=self.data[col_in].values, fs=self.sampling_freq, nperseg=nb_sampl)
         if typ is not None:
-            freq_out, ampl_out = welch(self.data[col_in].values, self.sampling_freq, scaling='spectrum')
+            freq_out, ampl_out = welch(x=self.data[col_in].values, fs=self.sampling_freq, nperseg=nb_sampl, scaling='spectrum')
         return freq_out, ampl_out
 
     def compute_fourier_spectrum(self, typ=None):
@@ -86,15 +86,16 @@ class SpectralAnalysis:
         self.get_data_into_pandas_format(add_suffix='(spectral)', typ=typ)
         return self.dataFrame
 
-    def compute_spectral_density_using_welch(self, typ=None):
+    def compute_spectral_density_using_welch(self, sampling_res=1, typ=None):
 
+        nb_sampling = self.sampling_freq / sampling_res
         for col in self.data.columns.values:
-            freq, ampl = self._compute_welch(col_in=col)
+            freq, ampl = self._compute_welch(col_in=col, nb_sampl=nb_sampling)
             self._amplitudes.append(ampl)
 
         if typ is not None:
             for col in self.data.columns.values:
-                freq, ampl = self._compute_welch(col_in=col, typ=typ)
+                freq, ampl = self._compute_welch(col_in=col, nb_sampl=nb_sampling, typ=typ)
                 self._amplitudes_dB.append(ampl)
 
         self._frequencies = freq
