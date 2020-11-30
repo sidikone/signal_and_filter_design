@@ -7,7 +7,7 @@ from fourier_analysis import SpectralAnalysis
 
 
 def test_compute_fourier_spectrum():
-    sign = SignalGenerator(sampling_freq=250, signal_start=0, signal_end=10,
+    sign = SignalGenerator(sampling_freq=250, signal_length=10,
                            multiple_sine=[(2.5, 5), (5, 3), (2, 7)])
     sign.add_noise(3.5)
     data = sign.get_data_into_pandas_format()
@@ -30,7 +30,7 @@ def test_compute_fourier_spectrum():
 
 
 def test_compute_periodogram():
-    sign = SignalGenerator(sampling_freq=250, signal_start=0, signal_end=10,
+    sign = SignalGenerator(sampling_freq=250, signal_length=10,
                            multiple_sine=[(2.5, 5), (5, 3), (2, 7)])
     sign.add_noise(3.5)
     data = sign.get_data_into_pandas_format()
@@ -53,7 +53,7 @@ def test_compute_periodogram():
 
 
 def test_compute_welch():
-    sign = SignalGenerator(sampling_freq=250, signal_start=0, signal_end=10,
+    sign = SignalGenerator(sampling_freq=250, signal_length=10,
                            multiple_sine=[(2.5, 5), (5, 3), (2, 7)])
     sign.add_noise(3.5)
     data = sign.get_data_into_pandas_format()

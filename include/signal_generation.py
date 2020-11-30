@@ -1,19 +1,20 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import datetime
 
 error1 = "end value must be greater than start value !"
 
 
 class SignalGenerator:
 
-    def __init__(self, sampling_freq=100, signal_freq=1, signal_ampl=1, signal_start=0, signal_end=1, multiple_sine=[]):
+    def __init__(self, sampling_freq=100, signal_freq=1, signal_ampl=1, signal_length=10, multiple_sine=[]):
 
         self._multiple_gen_trig = False
         self._noise_trig = False
         self._sampling_freq = sampling_freq
-        self._signal_start = signal_start
-        self._signal_end = signal_end
+        self._signal_start = 0
+        self._signal_end = signal_length
         if self._signal_start > self._signal_end:
             raise ValueError(error1)
         self._time = self._time_gen(True)
@@ -108,6 +109,13 @@ class SignalGenerator:
         self.noise_signal = self._signal + np.random.normal(scale=np.sqrt(std), size=len(self._time))
         return None
 
+    def _timestamp_data(self):
+
+        time_index = pd.date_range(
+            datetime.datetime.now(), periods=len(self._signal), freq=str(self._sampling_period)+'S', name="timestamp"
+        )
+        return time_index
+
     @staticmethod
     def _generate_random_freq(min_value, max_value, siz_value):
 
@@ -141,8 +149,8 @@ class SignalGenerator:
         return self._time, self._signal
 
     def get_data_into_pandas_format(self):
-
-        self.dataFrame = pd.DataFrame({'Timestamp': self._time, 'raw_data': self._signal})
+        time_index = self._timestamp_data()
+        self.dataFrame = pd.DataFrame({'Timestamp': time_index.values, 'raw_data': self._signal})
         self.dataFrame = self.dataFrame.set_index('Timestamp')
 
         if self._noise_trig:
@@ -172,15 +180,14 @@ class SignalGenerator:
 
 
 def main():
-    sign1 = SignalGenerator(sampling_freq=100, signal_start=0, signal_end=3,
-                            multiple_sine=[(.5, 5), (.25, 6), (.75, 10)])
-    #    sign1 = SignalGenerator(sampling_freq=500, signal_freq=2, signal_ampl=10, signal_start=0, signal_end=1)
+    # sign1 = SignalGenerator(sampling_freq=100, signal_length=100,
+    #                         multiple_sine=[(.5, 5), (.25, 6), (.75, 10)])
 
-    #    sign1.random_multiple_signal_generation(min_freq=1, max_frq=5, min_ampl=2, max_ampl=50, siz_data=5)
-    #    sign1.set_signal_length(start=0, end=30.0)
+    sign1 = SignalGenerator(sampling_freq=50, signal_freq=2, signal_ampl=10, signal_length=20)
+
     sign1.add_noise(5)
     data1 = sign1.get_data_into_pandas_format()
-    print(data1.head(3))
+
     data1.plot()
     plt.show()
 
@@ -208,6 +215,7 @@ def main():
 # # sign2.plot_signal(False)
 # sign1.plot_multiple(sign2, True)
 
-
+print(__name__)
 if __name__ == "__main__":
     main()
+    print(__name__)

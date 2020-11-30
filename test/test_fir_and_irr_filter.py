@@ -1,6 +1,5 @@
 import sys
 from os.path import abspath
-
 sys.path.append(abspath('../include'))
 
 # from os.path import dirname, abspath
@@ -11,7 +10,7 @@ from signal_filter import firFilter
 
 
 def test_iir_filter():
-    sign = SignalGenerator(sampling_freq=50, signal_freq=2, signal_ampl=25, signal_start=0, signal_end=10)
+    sign = SignalGenerator(sampling_freq=50, signal_freq=2, signal_ampl=25, signal_length=10)
     sign.add_noise(3.5)
     data = sign.get_data_into_pandas_format()
     nb_lin, nb_col = data.shape
@@ -38,7 +37,7 @@ def test_iir_filter():
 
 
 def test_fir_filter():
-    sign = SignalGenerator(sampling_freq=50, signal_freq=2, signal_ampl=25, signal_start=0, signal_end=10)
+    sign = SignalGenerator(sampling_freq=50, signal_freq=2, signal_ampl=25, signal_length=10)
     sign.add_noise(3.5)
     data = sign.get_data_into_pandas_format()
     nb_lin, nb_col = data.shape

@@ -1,0 +1,31 @@
+attrs @ file:///tmp/build/80754af9/attrs_1604765588209/work
+certifi==2020.6.20
+coverage==5.3
+cycler==0.10.0
+importlib-metadata @ file:///tmp/build/80754af9/importlib-metadata_1602276842396/work
+iniconfig @ file:///tmp/build/80754af9/iniconfig_1602780191262/work
+kiwisolver @ file:///tmp/build/80754af9/kiwisolver_1604014557000/work
+matplotlib @ file:///tmp/build/80754af9/matplotlib-base_1603373816490/work
+mkl-fft==1.2.0
+mkl-random==1.1.1
+mkl-service==2.3.0
+more-itertools @ file:///tmp/build/80754af9/more-itertools_1605111547926/work
+numpy @ file:///tmp/build/80754af9/numpy_and_numpy_base_1603487797006/work
+olefile==0.46
+packaging==20.4
+pandas @ file:///tmp/build/80754af9/pandas_1602088135163/work
+Pillow @ file:///tmp/build/80754af9/pillow_1603822238230/work
+pluggy==0.13.1
+py @ file:///tmp/build/80754af9/py_1593446248552/work
+pyparsing==2.4.7
+pytest==0.0.0
+pytest-cov @ file:///tmp/build/80754af9/pytest-cov_1597600886872/work
+pytest-html==2.1.1
+pytest-metadata==1.10.0
+python-dateutil==2.8.1
+pytz==2020.1
+scipy @ file:///tmp/build/80754af9/scipy_1597686625380/work
+six==1.15.0
+toml @ file:///tmp/build/80754af9/toml_1592853716807/work
+tornado==6.0.4
+zipp @ file:///tmp/build/80754af9/zipp_1604001098328/work

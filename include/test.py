@@ -7,7 +7,7 @@ from signal_filter import firFilter
 
 def main():
 
-    sign1 = SignalGenerator(sampling_freq=500, signal_start=0, signal_end=10,
+    sign1 = SignalGenerator(sampling_freq=500, signal_length=10,
                             multiple_sine=[(2, 5), (50, 25), (20, 10)])
     sign1.add_noise(5)
     data1 = sign1.get_data_into_pandas_format()
