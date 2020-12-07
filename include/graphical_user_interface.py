@@ -1,9 +1,10 @@
 import sys
-from PyQt5.QtWidgets import (QApplication, QWidget, QMainWindow, QLabel,
-                             QHBoxLayout, QVBoxLayout, QButtonGroup, QCheckBox,
-                             QPushButton, QLineEdit, QAction)
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import *
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QMenuBar, QStatusBar, QWidget, )
+from PyQt5.QtWidgets import (QLabel, QHBoxLayout, QVBoxLayout, QButtonGroup, QCheckBox,
+                             QPushButton, QLineEdit, QAction, QMenuBar)
+
+from PyQt5.QtGui import *
+from PyQt5.QtCore import QRect
 from PyQt5.QtGui import QPixmap
 
 
@@ -126,41 +127,150 @@ class MainDisplay(QMainWindow):
         self.initializeUI()
 
     def initializeUI(self):
+
+        self.__init_main_window(geometry=True)
         # self.setGeometry(100, 100, 400, 200)
-        self.setWindowTitle('Signal generator & filterer')
-        self.__create_layout(dtype='HBOX', spacing=10)
+        # self.setWindowTitle('Signal generator & filterer')
+        #
+        # self.__set_menu_bar(x_0=0, y_0=0, width=300, height=15)
+        # self.__set_status_bar()
+        # self.__set_central_widget()
 
+        #
+        # q1 = QPushButton('Abou')
+        # q2 = QPushButton('Sidik')
+        #
+        # # vbox = QVBoxLayout()
+        # hbox = QHBoxLayout()
+        # vbox = QVBoxLayout()
+        # # vbox.addStretch()
+        #
+        # vbox.addWidget(q1)
+        # vbox.addWidget(q2)
+        #
+        # hbox.addLayout(vbox)
+        # opt = QWidget()
+        # vbox = self.QVBoxLayout()
+        # for i1 in range(2):
+        #     hbox = QHBoxLayout()
+        #     hbox.setContentsMargins(0, 0, 0, 0)
+        #     hbox.addStretch()
+        #
+        #     for i2 in range(2):
+        #         bb = QPushButton(str(i2))
+        #         hbox.addWidget(bb)
+        #     vbox.addLayout(hbox)
 
+        # my_layout = self.__create_layout(dtype='VBOX', spacing=100)
+        # self.__update_layout(layout_obj=my_layout,
+        #                      widget_obj=self.__create_button(name='Papa'))
+        # self.__update_layout(layout_obj=my_layout,
+        #                      widget_obj=self.__create_button(name='mama'))
+        # my_layout.addStretch()
 
-        # but_1 = self.__create_button(name='Mama', obj=self)
+        # self.__create_button(name="but1", obj=my_layout)
+
+        # self.__update_layout(layout_obj=my_layout,
+        #                      widget_obj=QPushButton('Push Me', self))
+        # self.__update_layout(layout_obj=my_layout,
+        #                      widget_obj=QPushButton('Push Me again', self))
+
+        # but_1 = self.__create_button(name='Mama')
         # button_1 = QPushButton('Push Me', self)
         # self.createMenu()
-        self.show()
+        # self.show()
 
-    def __create_button(self, name, obj):
+    def __init_main_window(self, geometry=False):
+        """
+        Initialise the main window
+        :return: None
+        """
+        if geometry:
+            self.setGeometry(100, 100, 600, 400)
+        self.setWindowTitle('Signal generator & filterer')
+
+        self.__set_menu_bar(x_0=0, y_0=0, width=300, height=15)
+        self.__set_status_bar()
+        self.__set_central_widget()
+        return None
+
+
+    def __set_menu_bar(self, x_0, y_0, width, height):
+        """
+        MenuBar definition
+        :param x_0: int
+        :param y_0: int
+        :param width: int
+        :param height: int
+        :return: None
+        """
+
+        my_menu_bar = QMenuBar(self)
+        my_menu_bar.setGeometry(QRect(x_0, y_0, width, height))
+        self.setMenuBar(my_menu_bar)
+        return None
+
+    def __set_status_bar(self, apply=True):
+        """
+        SetBar definition
+        :param apply: bool
+        :return: None
+        """
+
+        if apply:
+            my_status_bar = QStatusBar(self)
+            self.setStatusBar(my_status_bar)
+        return None
+
+    def __set_central_widget(self):
+        """
+        Central widget definition
+        :return: None
+        """
+        my_widget = QWidget(self)
+        self.setCentralWidget(my_widget)
+        return None
+
+    def show_main_window(self, max_view_size=False, apply=True):
+        """
+        Allow you to set the main window in full screen mode
+        :param max_view_size: bool
+        :param apply: bool
+        :return: None
+        """
+        if apply:
+            if max_view_size is True:
+                self.showMaximized()
+            else:
+                self.show()
+
+    def __create_button(self, name):
         unit_but = QPushButton(text=name,
-                               parent=obj)
+                               parent=self)
         return unit_but
 
-    def __set_label(self, label, font='Arial', size=12):
+    @staticmethod
+    def __set_label(label, font='Arial', size=12):
         unit_label = QLabel(label)
         unit_label.setFont(QFont=QFont(font, size))
         return unit_label
 
-    def __create_layout(self, dtype='VBOX', spacing=False):
+    @staticmethod
+    def __create_layout(dtype='VBOX', spacing=False):
 
         layout = None
         if dtype is 'VBOX':
             layout = QVBoxLayout()
 
         elif dtype is 'HBOX':
-            layout = QVBoxLayout()
+            layout = QHBoxLayout()
 
         if spacing is not False:
             layout.setSpacing(spacing)
         return layout
 
-    def __update_layout(self, layout_obj, widget_obj):
+    @staticmethod
+    def __update_layout(layout_obj, widget_obj):
         layout_obj.addStretch()
         layout_obj.addWidget(widget_obj)
         layout_obj.addStretch()
@@ -188,6 +298,7 @@ class MainDisplay(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     gui = MainDisplay()
+    gui.show_main_window(max_view_size=True)
     # gui = MainWindow(title='Signal processing')
     # gui.show()
 
