@@ -183,7 +183,7 @@ def main():
     # sign1 = SignalGenerator(sampling_freq=100, signal_length=100,
     #                         multiple_sine=[(.5, 5), (.25, 6), (.75, 10)])
 
-    sign1 = SignalGenerator(sampling_freq=50, signal_freq=2, signal_ampl=10, signal_length=20)
+    sign1 = SignalGenerator(sampling_freq=250, signal_freq=2, signal_ampl=10, signal_length=5)
 
     sign1.add_noise(5)
     data1 = sign1.get_data_into_pandas_format()
@@ -215,7 +215,5 @@ def main():
 # # sign2.plot_signal(False)
 # sign1.plot_multiple(sign2, True)
 
-print(__name__)
 if __name__ == "__main__":
     main()
-    print(__name__)

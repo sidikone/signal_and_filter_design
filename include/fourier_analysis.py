@@ -25,13 +25,14 @@ class SpectralAnalysis:
             self.sampling_freq, self.sampling_period = self._get_sampling_info(self.data)
 
     def _compute_timedelta(self, data):
-        diff = data.index.to_series().diff()
-        return diff.dropna()
+        diff = data.index.to_series().diff().dropna()
+        time_delta = [time.total_seconds() for time in diff]
+        return time_delta
 
     def _get_sampling_info(self, data):
         time_delta = self._compute_timedelta(data)
-        dt = np.round(np.median(time_delta), 4)
-        fs = np.round(1 / dt, 4)
+        dt = np.round(np.median(time_delta), 8)
+        fs = np.round(1 / dt, 8)
 
         return fs, dt
 
