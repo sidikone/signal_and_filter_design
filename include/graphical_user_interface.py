@@ -33,7 +33,7 @@ class CustomTileLabel:
                                     border-style: outset;
                                     border-width: 2.5px;
                                     border-radius: 5px;
-                                    font: bold 24px 'Book Antiqua';
+                                    font: bold 24px Helvetica;
                                     qproperty-alignment: AlignCenter""")
 
         return None
@@ -93,6 +93,40 @@ class CustomTileLabel:
 #
 #     def buttonClicked(self):
 #         self.close()
+
+class CustomPushButton(QWidget):
+
+    def __init__(self, name='&Click'):
+        super().__init__()
+        self.unit_button = None
+        self.__create_button(name=name)
+        # print(self.unit_button)
+
+    def __create_button(self, name):
+        self.unit_button = QPushButton(name)
+        return None
+
+    def customize_button(self, color='black', font='Arial', size=20,  background_clr=None, active=False):
+
+        border_style = "outset"
+        border_width = 2.5
+        border_radius = 2.5
+        local_style = "color: " + color + ";"
+        if background_clr is not None:
+            local_style += "background-color: " + background_clr + ";"
+        local_style += "border-style :" + border_style + ";"
+        local_style += "border-width :" + str(border_width) + ";"
+        local_style += "border-radius :" + str(border_radius) + ";"
+        local_style += "font: " + str(size) + "px" + font + ";"
+        local_style += "qproperty - alignment: AlignCenter" + ";"
+
+        if active:
+            self.unit_button.setStyleSheet(local_style)
+        return None
+
+    def get_button(self):
+        return self.unit_button
+
 #
 #
 # class EntryWindow(QWidget):
@@ -165,20 +199,34 @@ class CustomGridLayout(QWidget):
 
     def __create_a_grid(self):
         count = 0
+        row_span, col_span = 1, 1
         for line in range(self.nb_rows):
             for col in range(self.nb_cols):
                 obj_number = CustomTileLabel(text=str(count))
                 obj_number = obj_number.get_layout()
-                self.grid_layout.addWidget(obj_number, line, col)
+                self.grid_layout.addWidget(obj_number, line, col, row_span, col_span)
                 count += 1
         return None
 
     def get_layout(self):
         return self.grid_layout
 
+    def set_unit_widget(self, widget_in, row, col):
+        row_span, col_span = 1, 1
+        self.grid_layout.addWidget(widget_in, row, col, row_span, col_span)
+        return None
+
+    def set_unit_layout(self, layout_in, row, col):
+        row_span, col_span = 1, 1
+        self.grid_layout.addLayout(layout_in, row, col, row_span, col_span)
+        return None
+
+    def set_multiple_widget(self, widget_in, row, col, row_span=1, col_span=1):
+        self.grid_layout.addWidget(widget_in, row, col, row_span, col_span)
+        return None
+
 
 class CustomColor(QWidget):
-
     def __init__(self, color):
         super().__init__()
         self.setAutoFillBackground(True)
@@ -186,23 +234,6 @@ class CustomColor(QWidget):
         palette = self.palette()
         palette.setColor(QPalette.Window, QColor(color))
         self.setPalette(palette)
-
-
-# class CustomPushButton(QWidget):
-#
-#     def __init__(self, name='button_name', color='None'):
-#         super().__init__()
-#         self.__create_button(name=name)
-#
-#     def __create_button(self, name):
-#         unit_but = QPushButton(text=name,
-#                                parent=self)
-#         return unit_but
-
-# def _create_unit_button(name_in, obj_in):
-#     unit_but = QPushButton(text=name_in,
-#                            parent=obj_in)
-#     return unit_but
 
 
 class MainDisplay(QMainWindow):
@@ -216,26 +247,51 @@ class MainDisplay(QMainWindow):
         self.__init_main_window(geometry=True)
 
         # -------------------------------------
-        mama = CustomGridLayout(shape=(2, 6))
-        # mama = CustomTileLabel()
+        main_grid = CustomGridLayout(shape=(3, 6))
+
+        but_1 = CustomPushButton(name='Press')
+        but_2 = CustomPushButton(name='Play')
+        # but_1.customize_button(color='black',)
+
+        layout_widget = CustomLayout(dtype='VBOX')
+        layout_widget.update_layout(widget_in=but_1.get_button())
+        layout_widget.update_layout(widget_in=but_2.get_button())
+
+        main_grid.set_unit_layout(layout_widget.get_layout(), 0, 4)
+
 
         # --------------------------------------
-        red_widget = CustomColor(color='red')
-        green_widget = CustomColor(color='green')
-        blue_widget = CustomColor(color='blue')
-        grey_widget = CustomColor(color='grey')
+        red_widget = CustomColor(color='magenta')
+        grey_light_widget = CustomColor(color='lightgrey')
+        blue_widget = CustomColor(color='skyblue')
+        grey_widget = CustomColor(color='darkgrey')
+        salmon_widget = CustomColor(color='burlywood')
+        aqua_widget = CustomColor(color='aquamarine')
+
+        # main_grid.set_unit_widget(blue_widget, 0, 4)
+        main_grid.set_unit_widget(red_widget, 0, 5)
+        main_grid.set_unit_widget(aqua_widget, 1, 4)
+        main_grid.set_unit_widget(salmon_widget, 1, 5)
+
+        main_grid.set_multiple_widget(grey_light_widget, 0, 0, 3, 4)
+        main_grid.set_multiple_widget(grey_widget, 2, 4, 1, 2)
 
         # self.__update_central_widget(red_widget)
 
-        layout_widget = CustomLayout(dtype='HBOX')
-        layout_widget.update_layout(widget_in=red_widget)
-        layout_widget.update_layout(widget_in=green_widget)
-        layout_widget.update_layout(widget_in=blue_widget)
-        layout_widget.update_layout(widget_in=grey_widget)
+        # layout_widget = CustomLayout(dtype='HBOX')
+        # layout_widget.update_layout(widget_in=red_widget)
+        # layout_widget.update_layout(widget_in=grey_light_widget)
+        # layout_widget.update_layout(widget_in=blue_widget)
+        # layout_widget.update_layout(widget_in=grey_widget)
 
         widget = QWidget()
-        #        widget.setLayout(layout_widget.get_layout())
-        widget.setLayout(mama.get_layout())
+
+        # widget.setLayout(layout_widget.get_layout())
+
+        widget.setLayout(main_grid.get_layout())
+
+        # widget.setLayout(layout_widget.get_layout())
+
         self.__update_central_widget(widget_in=widget)
         # self.setGeometry(100, 100, 400, 200)
         # self.setWindowTitle('Signal generator & filterer')
