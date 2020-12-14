@@ -1,17 +1,11 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QMenuBar, QStatusBar, QWidget, )
-from PyQt5.QtWidgets import (QLabel, QHBoxLayout, QVBoxLayout, QButtonGroup, QCheckBox,
-                             QPushButton, QLineEdit, QAction, QMenuBar)
+from PyQt5.QtWidgets import (QLabel, QHBoxLayout, QVBoxLayout, QGridLayout, )
+from PyQt5.QtWidgets import (QButtonGroup, QCheckBox, QPushButton, QLineEdit, QAction)
 
-from PyQt5.QtGui import *
-from PyQt5.QtCore import QRect
+from PyQt5.QtGui import (QColor, QPalette, QFont)
+from PyQt5.QtCore import (QRect, Qt)
 from PyQt5.QtGui import QPixmap
-
-
-def _create_unit_button(name_in, obj_in):
-    unit_but = QPushButton(text=name_in,
-                           parent=obj_in)
-    return unit_but
 
 
 def _update_layout(layout_obj, widget_obj):
@@ -21,18 +15,33 @@ def _update_layout(layout_obj, widget_obj):
     return None
 
 
-# class MainWindow(QMainWindow):
-#
-#     def __init__(self, title='my window', *args, **kwargs):
-#         self.window_title = title
-#         super(MainWindow, self).__init__(*args, **kwargs)
-#         self.setWindowTitle(self.window_title)
-#
-#         label = QLabel('this is awesome!!!')
-#         label.setAlignment(Qt.AlignCenter)
-#         self.setCentralWidget(label)
-#
-#
+def set_label(label, font='Arial', size=12):
+    unit_label = QLabel(label)
+    unit_label.setAlignment(Qt.AlignCenter)
+    unit_label.setFont(QFont(font, size))
+    return unit_label
+
+
+class CustomTileLabel:
+    def __init__(self, text='text'):
+        self.label = QLabel(text=text)
+        self.__style_sheet()
+
+    def __style_sheet(self):
+        self.label.setStyleSheet("""background-color: skyblue;
+                                    color: white;
+                                    border-style: outset;
+                                    border-width: 2.5px;
+                                    border-radius: 5px;
+                                    font: bold 24px 'Book Antiqua';
+                                    qproperty-alignment: AlignCenter""")
+
+        return None
+
+    def get_layout(self):
+        return self.label
+
+
 # class GUI(QWidget):
 #     def __init__(self):
 #         super().__init__()
@@ -119,6 +128,82 @@ def _update_layout(layout_obj, widget_obj):
 #             self.name_entry.clear()
 #         return None
 
+class CustomLayout(QWidget):
+
+    def __init__(self, dtype='VBOX'):
+        super().__init__()
+        self.layout = None
+        self.__create_layout(dtype=dtype)
+
+    def __create_layout(self, dtype, spacing=False):
+
+        if dtype is 'VBOX':
+            self.layout = QVBoxLayout()
+
+        elif dtype is 'HBOX':
+            self.layout = QHBoxLayout()
+
+        if spacing is not False:
+            self.layout.setSpacing(spacing)
+        return None
+
+    def update_layout(self, widget_in):
+        self.layout.addWidget(widget_in)
+
+    def get_layout(self):
+        return self.layout
+
+
+class CustomGridLayout(QWidget):
+
+    def __init__(self, shape=(2, 2)):
+        super().__init__()
+
+        (self.nb_rows, self.nb_cols) = shape
+        self.grid_layout = QGridLayout()
+        self.__create_a_grid()
+
+    def __create_a_grid(self):
+        count = 0
+        for line in range(self.nb_rows):
+            for col in range(self.nb_cols):
+                obj_number = CustomTileLabel(text=str(count))
+                obj_number = obj_number.get_layout()
+                self.grid_layout.addWidget(obj_number, line, col)
+                count += 1
+        return None
+
+    def get_layout(self):
+        return self.grid_layout
+
+
+class CustomColor(QWidget):
+
+    def __init__(self, color):
+        super().__init__()
+        self.setAutoFillBackground(True)
+
+        palette = self.palette()
+        palette.setColor(QPalette.Window, QColor(color))
+        self.setPalette(palette)
+
+
+# class CustomPushButton(QWidget):
+#
+#     def __init__(self, name='button_name', color='None'):
+#         super().__init__()
+#         self.__create_button(name=name)
+#
+#     def __create_button(self, name):
+#         unit_but = QPushButton(text=name,
+#                                parent=self)
+#         return unit_but
+
+# def _create_unit_button(name_in, obj_in):
+#     unit_but = QPushButton(text=name_in,
+#                            parent=obj_in)
+#     return unit_but
+
 
 class MainDisplay(QMainWindow):
 
@@ -129,6 +214,29 @@ class MainDisplay(QMainWindow):
     def initializeUI(self):
 
         self.__init_main_window(geometry=True)
+
+        # -------------------------------------
+        mama = CustomGridLayout(shape=(2, 6))
+        # mama = CustomTileLabel()
+
+        # --------------------------------------
+        red_widget = CustomColor(color='red')
+        green_widget = CustomColor(color='green')
+        blue_widget = CustomColor(color='blue')
+        grey_widget = CustomColor(color='grey')
+
+        # self.__update_central_widget(red_widget)
+
+        layout_widget = CustomLayout(dtype='HBOX')
+        layout_widget.update_layout(widget_in=red_widget)
+        layout_widget.update_layout(widget_in=green_widget)
+        layout_widget.update_layout(widget_in=blue_widget)
+        layout_widget.update_layout(widget_in=grey_widget)
+
+        widget = QWidget()
+        #        widget.setLayout(layout_widget.get_layout())
+        widget.setLayout(mama.get_layout())
+        self.__update_central_widget(widget_in=widget)
         # self.setGeometry(100, 100, 400, 200)
         # self.setWindowTitle('Signal generator & filterer')
         #
@@ -183,17 +291,16 @@ class MainDisplay(QMainWindow):
     def __init_main_window(self, geometry=False):
         """
         Initialise the main window
+        :param geometry: bool - Allows to fix the size of the window
         :return: None
         """
         if geometry:
-            self.setGeometry(100, 100, 600, 400)
+            self.setGeometry(100, 100, 600, 400)  # define a fixed size of the window
         self.setWindowTitle('Signal generator & filterer')
 
         self.__set_menu_bar(x_0=0, y_0=0, width=300, height=15)
         self.__set_status_bar()
-        self.__set_central_widget()
         return None
-
 
     def __set_menu_bar(self, x_0, y_0, width, height):
         """
@@ -222,13 +329,13 @@ class MainDisplay(QMainWindow):
             self.setStatusBar(my_status_bar)
         return None
 
-    def __set_central_widget(self):
+    def __update_central_widget(self, widget_in):
         """
-        Central widget definition
+        Update central widget with 'widget_in' object
+        :param widget_in: Widget object
         :return: None
         """
-        my_widget = QWidget(self)
-        self.setCentralWidget(my_widget)
+        self.setCentralWidget(widget_in)
         return None
 
     def show_main_window(self, max_view_size=False, apply=True):
@@ -244,38 +351,27 @@ class MainDisplay(QMainWindow):
             else:
                 self.show()
 
-    def __create_button(self, name):
-        unit_but = QPushButton(text=name,
-                               parent=self)
-        return unit_but
-
-    @staticmethod
-    def __set_label(label, font='Arial', size=12):
-        unit_label = QLabel(label)
-        unit_label.setFont(QFont=QFont(font, size))
-        return unit_label
-
-    @staticmethod
-    def __create_layout(dtype='VBOX', spacing=False):
-
-        layout = None
-        if dtype is 'VBOX':
-            layout = QVBoxLayout()
-
-        elif dtype is 'HBOX':
-            layout = QHBoxLayout()
-
-        if spacing is not False:
-            layout.setSpacing(spacing)
-        return layout
-
-    @staticmethod
-    def __update_layout(layout_obj, widget_obj):
-        layout_obj.addStretch()
-        layout_obj.addWidget(widget_obj)
-        layout_obj.addStretch()
-        return None
-        # button_1 = QPushButton('Push Me', self)
+    # @staticmethod
+    # def __create_layout(dtype='VBOX', spacing=False):
+    #
+    #     layout = None
+    #     if dtype is 'VBOX':
+    #         layout = QVBoxLayout()
+    #
+    #     elif dtype is 'HBOX':
+    #         layout = QHBoxLayout()
+    #
+    #     if spacing is not False:
+    #         layout.setSpacing(spacing)
+    #     return layout
+    #
+    # @staticmethod
+    # def __update_layout(layout_obj, widget_obj):
+    #     layout_obj.addStretch()
+    #     layout_obj.addWidget(widget_obj)
+    #     layout_obj.addStretch()
+    #     return None
+    # button_1 = QPushButton('Push Me', self)
 
     # def createMenu(self):
     #     exit_act = QAction('Exit', self)
