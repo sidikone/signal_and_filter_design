@@ -15,7 +15,7 @@ def _update_layout(layout_obj, widget_obj):
     return None
 
 
-def set_label(label, font='Arial', size=12):
+def set_label(label, font='Times New Roman', size=11):
     unit_label = QLabel(label)
     unit_label.setAlignment(Qt.AlignCenter)
     unit_label.setFont(QFont(font, size))
@@ -98,15 +98,15 @@ class CustomPushButton(QWidget):
 
     def __init__(self, name='&Click'):
         super().__init__()
-        self.unit_button = None
+        self.unit_button = QPushButton()
         self.__create_button(name=name)
         # print(self.unit_button)
 
     def __create_button(self, name):
-        self.unit_button = QPushButton(name)
+        self.unit_button.setText(name)
         return None
 
-    def customize_button(self, color='black', font='Arial', size=20,  background_clr=None, active=False):
+    def customize_button(self, color='black', font='Arial', size=20, background_clr=None, active=False):
 
         border_style = "outset"
         border_width = 2.5
@@ -126,6 +126,7 @@ class CustomPushButton(QWidget):
 
     def get_button(self):
         return self.unit_button
+
 
 #
 #
@@ -190,10 +191,10 @@ class CustomLayout(QWidget):
 
 class CustomGridLayout(QWidget):
 
-    def __init__(self, shape=(2, 2)):
+    def __init__(self, shape=(2, 2), option="default"):
         super().__init__()
-
         (self.nb_rows, self.nb_cols) = shape
+        self.option = option
         self.grid_layout = QGridLayout()
         self.__create_a_grid()
 
@@ -202,9 +203,12 @@ class CustomGridLayout(QWidget):
         row_span, col_span = 1, 1
         for line in range(self.nb_rows):
             for col in range(self.nb_cols):
-                obj_number = CustomTileLabel(text=str(count))
-                obj_number = obj_number.get_layout()
-                self.grid_layout.addWidget(obj_number, line, col, row_span, col_span)
+                if self.option is not "default":
+                    obj_number = CustomTileLabel(text=str(count))
+                    local_obj = obj_number.get_layout()
+                else:
+                    local_obj = QWidget()
+                self.grid_layout.addWidget(local_obj, line, col, row_span, col_span)
                 count += 1
         return None
 
@@ -236,6 +240,30 @@ class CustomColor(QWidget):
         self.setPalette(palette)
 
 
+class CustomPushButtonBox(QWidget):
+
+    def __init__(self, title="my_title", dtype="VBOX"):
+        super().__init__()
+
+        self.my_title = title
+        self.my_layout = CustomLayout(dtype=dtype)
+        self.__initializer()
+        # self.my_layout = self.my_layout.get_layout()
+
+    def __initializer(self):
+        my_title = set_label(label=self.my_title)
+        self.my_layout.update_layout(my_title)
+        return None
+
+    def add_button(self, name="my_button"):
+        unit_button = CustomPushButton(name=name)
+        self.my_layout.update_layout(unit_button.get_button())
+        return None
+
+    def get_layout(self):
+        return self.my_layout.get_layout()
+
+
 class MainDisplay(QMainWindow):
 
     def __init__(self):
@@ -249,8 +277,16 @@ class MainDisplay(QMainWindow):
         # -------------------------------------
         main_grid = CustomGridLayout(shape=(3, 6))
 
-        but_1 = CustomPushButton(name='Press')
-        but_2 = CustomPushButton(name='Play')
+        # -------------------------------------
+        signal_gen_box = CustomPushButtonBox(title="Signal generation")
+        signal_gen_box.add_button(name="&Single signal")
+        signal_gen_box.add_button(name="&Multiple signal")
+        signal_gen_box.add_button(name="Set &noise")
+
+        print(signal_gen_box.get_layout())
+
+        but_1 = CustomPushButton(name='&Play')
+        but_2 = CustomPushButton(name='&Stop')
         # but_1.customize_button(color='black',)
 
         layout_widget = CustomLayout(dtype='VBOX')
@@ -258,7 +294,6 @@ class MainDisplay(QMainWindow):
         layout_widget.update_layout(widget_in=but_2.get_button())
 
         main_grid.set_unit_layout(layout_widget.get_layout(), 0, 4)
-
 
         # --------------------------------------
         red_widget = CustomColor(color='magenta')
@@ -271,7 +306,7 @@ class MainDisplay(QMainWindow):
         # main_grid.set_unit_widget(blue_widget, 0, 4)
         main_grid.set_unit_widget(red_widget, 0, 5)
         main_grid.set_unit_widget(aqua_widget, 1, 4)
-        main_grid.set_unit_widget(salmon_widget, 1, 5)
+        main_grid.set_unit_layout(signal_gen_box.get_layout(), 1, 5)
 
         main_grid.set_multiple_widget(grey_light_widget, 0, 0, 3, 4)
         main_grid.set_multiple_widget(grey_widget, 2, 4, 1, 2)
