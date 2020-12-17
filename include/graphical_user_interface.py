@@ -268,85 +268,119 @@ class MainDisplay(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.initializeUI()
+        self.main_grid = None
+        self.__initializeUI()
 
-    def initializeUI(self):
+        self.__signal_generator_setup(False)
+        self.__setup_example_1(False)
+        self.__setup_example_2(True)
 
-        self.__init_main_window(geometry=True)
+        self.__run_application()
 
-        # -------------------------------------
-        main_grid = CustomGridLayout(shape=(3, 6))
-
-        # -------------------------------------
+    def __signal_generator_setup(self, display=True):
+        """
+        Signal generator bloc implementation
+        :return: Vertical layout
+        """
         signal_gen_box = CustomPushButtonBox(title="Signal generation")
         signal_gen_box.add_button(name="&Single signal")
         signal_gen_box.add_button(name="&Multiple signal")
         signal_gen_box.add_button(name="Set &noise")
 
-        print(signal_gen_box.get_layout())
+        if display:
+            self.__grid_layout_setup_for_layout(signal_gen_box.get_layout(), row=0, col=4)
 
+        return None
+
+    def __grid_layout_setup_for_layout(self, layout_in, row, col, row_span=1, col_span=1, dtype="default"):
+        """
+        Function used to set up a layout on the ain grid
+        :param layout_in:
+        :param row:
+        :param col:
+        :param row_span:
+        :param col_span:
+        :param dtype: change between a single layout or multiple size layout
+        :return: None
+        """
+        if dtype is "default":
+            self.main_grid.set_unit_layout(layout_in, row, col)
+
+        else:
+            self.main_grid.set_multiple_layout(layout_in, row, col, row_span, col_span)
+        return None
+
+
+    def __grid_layout_setup_for_widet(self, widget_in, row, col, row_span=1, col_span=1, dtype="default"):
+        """
+        Function used to set up a widget on the main grid
+        :param widget_in:
+        :param row:
+        :param col:
+        :param row_span:
+        :param col_span:
+        :param dtype: change between a single layout or multiple size layout
+        :return: None
+        """
+        if dtype is "default":
+            self.main_grid.set_unit_widget(widget_in, row, col)
+
+        else:
+            self.main_grid.set_multiple_widget(widget_in, row, col, row_span, col_span)
+        return None
+
+    def __setup_example_1(self, display=True):
+        """
+        Example of grid configuration
+        :return: Vertical layout
+        """
+        layout_widget = CustomLayout(dtype='VBOX')
         but_1 = CustomPushButton(name='&Play')
         but_2 = CustomPushButton(name='&Stop')
-        # but_1.customize_button(color='black',)
-
-        layout_widget = CustomLayout(dtype='VBOX')
         layout_widget.update_layout(widget_in=but_1.get_button())
         layout_widget.update_layout(widget_in=but_2.get_button())
 
-        main_grid.set_unit_layout(layout_widget.get_layout(), 0, 4)
+        if display:
+            self.__grid_layout_setup_for_layout(layout_widget.get_layout(), row=0, col=5)
 
-        # --------------------------------------
-        red_widget = CustomColor(color='magenta')
-        grey_light_widget = CustomColor(color='lightgrey')
+        return None
+
+
+    def __setup_example_2(self, display=True):
+        """
+        Example of grid configuration
+        :return: Grid layout
+        """
         blue_widget = CustomColor(color='skyblue')
-        grey_widget = CustomColor(color='darkgrey')
+        red_widget = CustomColor(color='magenta')
         salmon_widget = CustomColor(color='burlywood')
         aqua_widget = CustomColor(color='aquamarine')
+        grey_light_widget = CustomColor(color='lightgrey')
+        grey_widget = CustomColor(color='darkgrey')
 
-        # main_grid.set_unit_widget(blue_widget, 0, 4)
-        main_grid.set_unit_widget(red_widget, 0, 5)
-        main_grid.set_unit_widget(aqua_widget, 1, 4)
-        main_grid.set_unit_layout(signal_gen_box.get_layout(), 1, 5)
+        if display:
+            self.__grid_layout_setup_for_widet(blue_widget, row=0, col=4)
+            self.__grid_layout_setup_for_widet(red_widget, row=0, col=5)
+            self.__grid_layout_setup_for_widet(salmon_widget, row=1, col=4)
+            self.__grid_layout_setup_for_widet(aqua_widget, row=1, col=5)
 
-        main_grid.set_multiple_widget(grey_light_widget, 0, 0, 3, 4)
-        main_grid.set_multiple_widget(grey_widget, 2, 4, 1, 2)
+            self.__grid_layout_setup_for_widet(aqua_widget, row=1, col=5)
+            self.__grid_layout_setup_for_widet(grey_light_widget, row=0, col=0, row_span=3,
+                                               col_span=4, dtype="multiple")
+            self.__grid_layout_setup_for_widet(grey_widget, row=2, col=4, row_span=1,
+                                               col_span=2, dtype="multiple")
 
-        # self.__update_central_widget(red_widget)
+        return None
 
-        # layout_widget = CustomLayout(dtype='HBOX')
-        # layout_widget.update_layout(widget_in=red_widget)
-        # layout_widget.update_layout(widget_in=grey_light_widget)
-        # layout_widget.update_layout(widget_in=blue_widget)
-        # layout_widget.update_layout(widget_in=grey_widget)
 
-        widget = QWidget()
+    def __initializeUI(self):
 
-        # widget.setLayout(layout_widget.get_layout())
+        self.__init_main_window(geometry=True)
+        self.main_grid = CustomGridLayout(shape=(3, 6))
 
-        widget.setLayout(main_grid.get_layout())
-
-        # widget.setLayout(layout_widget.get_layout())
-
-        self.__update_central_widget(widget_in=widget)
-        # self.setGeometry(100, 100, 400, 200)
-        # self.setWindowTitle('Signal generator & filterer')
-        #
-        # self.__set_menu_bar(x_0=0, y_0=0, width=300, height=15)
-        # self.__set_status_bar()
-        # self.__set_central_widget()
-
-        #
-        # q1 = QPushButton('Abou')
-        # q2 = QPushButton('Sidik')
-        #
-        # # vbox = QVBoxLayout()
-        # hbox = QHBoxLayout()
         # vbox = QVBoxLayout()
         # # vbox.addStretch()
-        #
-        # vbox.addWidget(q1)
-        # vbox.addWidget(q2)
-        #
+
         # hbox.addLayout(vbox)
         # opt = QWidget()
         # vbox = self.QVBoxLayout()
@@ -360,24 +394,11 @@ class MainDisplay(QMainWindow):
         #         hbox.addWidget(bb)
         #     vbox.addLayout(hbox)
 
-        # my_layout = self.__create_layout(dtype='VBOX', spacing=100)
-        # self.__update_layout(layout_obj=my_layout,
-        #                      widget_obj=self.__create_button(name='Papa'))
-        # self.__update_layout(layout_obj=my_layout,
-        #                      widget_obj=self.__create_button(name='mama'))
-        # my_layout.addStretch()
-
-        # self.__create_button(name="but1", obj=my_layout)
-
-        # self.__update_layout(layout_obj=my_layout,
-        #                      widget_obj=QPushButton('Push Me', self))
-        # self.__update_layout(layout_obj=my_layout,
-        #                      widget_obj=QPushButton('Push Me again', self))
-
-        # but_1 = self.__create_button(name='Mama')
-        # button_1 = QPushButton('Push Me', self)
-        # self.createMenu()
-        # self.show()
+    def __run_application(self):
+        widget = QWidget()
+        widget.setLayout(self.main_grid.get_layout())
+        self.__update_central_widget(widget_in=widget)
+        return None
 
     def __init_main_window(self, geometry=False):
         """
