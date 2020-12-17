@@ -167,7 +167,7 @@ class CustomLayout(QWidget):
 
     def __init__(self, dtype='VBOX'):
         super().__init__()
-        self.layout = None
+        self.layout = QWidget()
         self.__create_layout(dtype=dtype)
 
     def __create_layout(self, dtype, spacing=False):
@@ -271,9 +271,10 @@ class MainDisplay(QMainWindow):
         self.main_grid = None
         self.__initializeUI()
 
-        self.__signal_generator_setup(False)
         self.__setup_example_1(False)
-        self.__setup_example_2(True)
+
+        self.__color_background_setup(True)
+        self.__signal_generator_setup(True)
 
         self.__run_application()
 
@@ -310,8 +311,7 @@ class MainDisplay(QMainWindow):
             self.main_grid.set_multiple_layout(layout_in, row, col, row_span, col_span)
         return None
 
-
-    def __grid_layout_setup_for_widet(self, widget_in, row, col, row_span=1, col_span=1, dtype="default"):
+    def __grid_layout_setup_for_widget(self, widget_in, row, col, row_span=1, col_span=1, dtype="default"):
         """
         Function used to set up a widget on the main grid
         :param widget_in:
@@ -345,8 +345,7 @@ class MainDisplay(QMainWindow):
 
         return None
 
-
-    def __setup_example_2(self, display=True):
+    def __color_background_setup(self, display=True):
         """
         Example of grid configuration
         :return: Grid layout
@@ -359,19 +358,18 @@ class MainDisplay(QMainWindow):
         grey_widget = CustomColor(color='darkgrey')
 
         if display:
-            self.__grid_layout_setup_for_widet(blue_widget, row=0, col=4)
-            self.__grid_layout_setup_for_widet(red_widget, row=0, col=5)
-            self.__grid_layout_setup_for_widet(salmon_widget, row=1, col=4)
-            self.__grid_layout_setup_for_widet(aqua_widget, row=1, col=5)
+            self.__grid_layout_setup_for_widget(blue_widget, row=0, col=4)
+            self.__grid_layout_setup_for_widget(red_widget, row=0, col=5)
+            self.__grid_layout_setup_for_widget(salmon_widget, row=1, col=4)
+            self.__grid_layout_setup_for_widget(aqua_widget, row=1, col=5)
 
-            self.__grid_layout_setup_for_widet(aqua_widget, row=1, col=5)
-            self.__grid_layout_setup_for_widet(grey_light_widget, row=0, col=0, row_span=3,
-                                               col_span=4, dtype="multiple")
-            self.__grid_layout_setup_for_widet(grey_widget, row=2, col=4, row_span=1,
-                                               col_span=2, dtype="multiple")
+            self.__grid_layout_setup_for_widget(aqua_widget, row=1, col=5)
+            self.__grid_layout_setup_for_widget(grey_light_widget, row=0, col=0, row_span=3,
+                                                col_span=4, dtype="multiple")
+            self.__grid_layout_setup_for_widget(grey_widget, row=2, col=4, row_span=1,
+                                                col_span=2, dtype="multiple")
 
         return None
-
 
     def __initializeUI(self):
 
