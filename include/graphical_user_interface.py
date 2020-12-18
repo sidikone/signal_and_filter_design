@@ -222,13 +222,12 @@ class CustomLayout:
         return self.layout
 
 
-class CustomGridLayout(QWidget):
+class CustomGridLayout(QGridLayout):
 
     def __init__(self, shape=(2, 2), option="default"):
         super().__init__()
         (self.nb_rows, self.nb_cols) = shape
         self.option = option
-        self.grid_layout = QGridLayout()
         self.__create_a_grid()
 
     def __create_a_grid(self):
@@ -241,25 +240,22 @@ class CustomGridLayout(QWidget):
                     local_obj = obj_number.get_layout()
                 else:
                     local_obj = QWidget()
-                self.grid_layout.addWidget(local_obj, line, col, row_span, col_span)
+                self.addWidget(local_obj, line, col, row_span, col_span)
                 count += 1
         return None
 
-    def get_layout(self):
-        return self.grid_layout
-
     def set_unit_widget(self, widget_in, row, col):
         row_span, col_span = 1, 1
-        self.grid_layout.addWidget(widget_in, row, col, row_span, col_span)
+        self.addWidget(widget_in, row, col, row_span, col_span)
         return None
 
     def set_unit_layout(self, layout_in, row, col):
         row_span, col_span = 1, 1
-        self.grid_layout.addLayout(layout_in, row, col, row_span, col_span)
+        self.addLayout(layout_in, row, col, row_span, col_span)
         return None
 
     def set_multiple_widget(self, widget_in, row, col, row_span=1, col_span=1):
-        self.grid_layout.addWidget(widget_in, row, col, row_span, col_span)
+        self.addWidget(widget_in, row, col, row_span, col_span)
         return None
 
 
@@ -269,7 +265,6 @@ class CustomPushButtonBox:
         super().__init__()
 
         self.my_layout = CustomLayout(dtype=dtype)
-        # self.my_layout = self.my_layout.get_layout()
 
     def add_title(self, title="my_title", font="Arial", size=15, color="black"):
         my_label = CustomLabel(text=title)
@@ -446,22 +441,22 @@ class MainDisplay(QMainWindow):
         salmon_widget = CustomColor(color='burlywood')
         salmon_widget.setMinimumWidth(min_width)
 
-        aqua_widget = CustomColor(color='aquamarine')
+        aqua_widget = CustomColor(color='lightgreen')
         aqua_widget.setMinimumWidth(min_width)
 
         grey_light_widget = CustomColor(color='lightgrey')
-        grey_widget = CustomColor(color='darkgrey')
+        grey_widget = CustomColor(color='grey')
 
         if display:
             self.__grid_layout_setup_for_widget(blue_widget, row=0, col=4)
-            self.__grid_layout_setup_for_widget(violet_widget, row=0, col=5)
-            self.__grid_layout_setup_for_widget(salmon_widget, row=1, col=4)
-            self.__grid_layout_setup_for_widget(aqua_widget, row=1, col=5)
+            self.__grid_layout_setup_for_widget(aqua_widget, row=0, col=5)
 
-            self.__grid_layout_setup_for_widget(aqua_widget, row=1, col=5)
-            self.__grid_layout_setup_for_widget(grey_light_widget, row=0, col=0, row_span=3,
+            self.__grid_layout_setup_for_widget(violet_widget, row=1, col=4)
+            self.__grid_layout_setup_for_widget(salmon_widget, row=1, col=5)
+
+            self.__grid_layout_setup_for_widget(grey_widget, row=0, col=0, row_span=3,
                                                 col_span=4, dtype="multiple")
-            self.__grid_layout_setup_for_widget(grey_widget, row=2, col=4, row_span=1,
+            self.__grid_layout_setup_for_widget(grey_light_widget, row=2, col=4, row_span=1,
                                                 col_span=2, dtype="multiple")
 
         return None
@@ -489,7 +484,7 @@ class MainDisplay(QMainWindow):
 
     def __run_application(self):
         widget = QWidget()
-        widget.setLayout(self.main_grid.get_layout())
+        widget.setLayout(self.main_grid)
         self.__update_central_widget(widget_in=widget)
         return None
 
