@@ -124,15 +124,14 @@ class CustomTileLabel:
 #     def buttonClicked(self):
 #         self.close()
 
-class CustomPushButton:
+class CustomPushButton(QPushButton):
 
     def __init__(self, name='&Click'):
         super().__init__()
-        self.unit_button = QPushButton()
         self.__create_button(name=name)
 
     def __create_button(self, name):
-        self.unit_button.setText(name)
+        self.setText(name)
         return None
 
     def customize_button(self, color='black', font='Arial', size=20, background_clr=None, active=False):
@@ -150,16 +149,12 @@ class CustomPushButton:
         local_style += "qproperty - alignment: AlignCenter" + ";"
 
         if active:
-            self.unit_button.setStyleSheet(local_style)
+            self.setStyleSheet(local_style)
         return None
 
     def set_min_width(self, width_value):
-        self.unit_button.setMinimumWidth(width_value)
+        self.setMinimumWidth(width_value)
         return None
-
-    def get_button(self):
-        return self.unit_button
-
 
 #
 #
@@ -275,7 +270,7 @@ class CustomPushButtonBox:
     def add_button(self, name="my_button", min_width=100):
         unit_button = CustomPushButton(name=name)
         unit_button.set_min_width(min_width)
-        self.my_layout.update_layout(unit_button.get_button())
+        self.my_layout.update_layout(unit_button)
         return None
 
     def get_layout(self):
@@ -418,8 +413,8 @@ class MainDisplay(QMainWindow):
         layout_widget = CustomLayout(dtype='VBOX')
         but_1 = CustomPushButton(name='&Play')
         but_2 = CustomPushButton(name='&Stop')
-        layout_widget.update_layout(widget_in=but_1.get_button())
-        layout_widget.update_layout(widget_in=but_2.get_button())
+        layout_widget.update_layout(widget_in=but_1)
+        layout_widget.update_layout(widget_in=but_2)
 
         if display:
             self.__grid_layout_setup_for_layout(layout_widget.get_layout(), row=0, col=5)
