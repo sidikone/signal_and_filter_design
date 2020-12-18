@@ -15,11 +15,41 @@ def _update_layout(layout_obj, widget_obj):
     return None
 
 
-def set_label(label, font='Times New Roman', size=11):
-    unit_label = QLabel(label)
-    unit_label.setAlignment(Qt.AlignCenter)
-    unit_label.setFont(QFont(font, size))
-    return unit_label
+class CustomColor(QWidget):
+    def __init__(self, color):
+        super().__init__()
+        self.color = color
+
+        self.__initializer()
+
+    def __initializer(self):
+        self.setAutoFillBackground(True)
+
+        palette = self.palette()
+        palette.setColor(QPalette.Window, QColor(self.color))
+        self.setPalette(palette)
+
+        return None
+
+
+class CustomLabel(QLabel):
+
+    def __init__(self, text):
+        super().__init__()
+        self.text = text
+        self.__initializer()
+
+    def __initializer(self):
+        self.setText(self.text)
+        self.setAlignment(Qt.AlignCenter)
+
+    def customize(self, font='Times New Roman', size=11, color="black"):
+        style = "font: " + str(size) + "px " + font + ";"
+        style += " color: " + color + ";"
+        style += "qproperty-alignment: AlignCenter"
+
+        self.setStyleSheet(style)
+        return None
 
 
 class CustomTileLabel:
@@ -94,13 +124,12 @@ class CustomTileLabel:
 #     def buttonClicked(self):
 #         self.close()
 
-class CustomPushButton(QWidget):
+class CustomPushButton:
 
     def __init__(self, name='&Click'):
         super().__init__()
         self.unit_button = QPushButton()
         self.__create_button(name=name)
-        # print(self.unit_button)
 
     def __create_button(self, name):
         self.unit_button.setText(name)
@@ -122,6 +151,10 @@ class CustomPushButton(QWidget):
 
         if active:
             self.unit_button.setStyleSheet(local_style)
+        return None
+
+    def set_min_width(self, width_value):
+        self.unit_button.setMinimumWidth(width_value)
         return None
 
     def get_button(self):
@@ -163,17 +196,17 @@ class CustomPushButton(QWidget):
 #             self.name_entry.clear()
 #         return None
 
-class CustomLayout(QWidget):
+class CustomLayout:
 
     def __init__(self, dtype='VBOX'):
         super().__init__()
-        self.layout = QWidget()
+        self.layout = QVBoxLayout()
         self.__create_layout(dtype=dtype)
 
     def __create_layout(self, dtype, spacing=False):
 
         if dtype is 'VBOX':
-            self.layout = QVBoxLayout()
+            pass
 
         elif dtype is 'HBOX':
             self.layout = QHBoxLayout()
@@ -183,7 +216,7 @@ class CustomLayout(QWidget):
         return None
 
     def update_layout(self, widget_in):
-        self.layout.addWidget(widget_in)
+        self.layout.addWidget(widget_in, alignment=Qt.AlignCenter)
 
     def get_layout(self):
         return self.layout
@@ -230,33 +263,23 @@ class CustomGridLayout(QWidget):
         return None
 
 
-class CustomColor(QWidget):
-    def __init__(self, color):
-        super().__init__()
-        self.setAutoFillBackground(True)
+class CustomPushButtonBox:
 
-        palette = self.palette()
-        palette.setColor(QPalette.Window, QColor(color))
-        self.setPalette(palette)
-
-
-class CustomPushButtonBox(QWidget):
-
-    def __init__(self, title="my_title", dtype="VBOX"):
+    def __init__(self, dtype="VBOX"):
         super().__init__()
 
-        self.my_title = title
         self.my_layout = CustomLayout(dtype=dtype)
-        self.__initializer()
         # self.my_layout = self.my_layout.get_layout()
 
-    def __initializer(self):
-        my_title = set_label(label=self.my_title)
-        self.my_layout.update_layout(my_title)
+    def add_title(self, title="my_title", font="Arial", size=15, color="black"):
+        my_label = CustomLabel(text=title)
+        my_label.customize(font=font, size=size, color=color)
+        self.my_layout.update_layout(my_label)
         return None
 
-    def add_button(self, name="my_button"):
+    def add_button(self, name="my_button", min_width=100):
         unit_button = CustomPushButton(name=name)
+        unit_button.set_min_width(min_width)
         self.my_layout.update_layout(unit_button.get_button())
         return None
 
@@ -275,6 +298,9 @@ class MainDisplay(QMainWindow):
 
         self.__color_background_setup(True)
         self.__signal_generator_setup(True)
+        self.__load_file_setup(True)
+        self.__signal_spectral_setup(True)
+        self.__filter_design_setup(True)
 
         self.__run_application()
 
@@ -283,13 +309,73 @@ class MainDisplay(QMainWindow):
         Signal generator bloc implementation
         :return: Vertical layout
         """
-        signal_gen_box = CustomPushButtonBox(title="Signal generation")
-        signal_gen_box.add_button(name="&Single signal")
-        signal_gen_box.add_button(name="&Multiple signal")
-        signal_gen_box.add_button(name="Set &noise")
+        signal_gen_box = CustomPushButtonBox(dtype="VBOX")
+        signal_gen_box.add_title(title="Signal generation", font="Times New Roman", size=21, color="white")
+
+        min_width_butt = 120
+        signal_gen_box.add_button(name="&Single File", min_width=min_width_butt)
+        signal_gen_box.add_button(name="&Multiple signal", min_width=min_width_butt)
+        signal_gen_box.add_button(name="Set &noise", min_width=min_width_butt)
+        signal_gen_box.add_button(name="Reset", min_width=min_width_butt)
 
         if display:
             self.__grid_layout_setup_for_layout(signal_gen_box.get_layout(), row=0, col=4)
+
+        return None
+
+    def __load_file_setup(self, display=True):
+        """
+        File loading bloc implementation
+        :return: Vertical layout
+        """
+        signal_load_box = CustomPushButtonBox(dtype="VBOX")
+        signal_load_box.add_title(title="File load", font="Times New Roman", size=21, color="white")
+
+        min_width_butt = 120
+        signal_load_box.add_button(name="Select &file", min_width=min_width_butt)
+        signal_load_box.add_button(name="Select &signal", min_width=min_width_butt)
+        signal_load_box.add_button(name="Reset", min_width=min_width_butt)
+
+        if display:
+            self.__grid_layout_setup_for_layout(signal_load_box.get_layout(), row=0, col=5)
+
+        return None
+
+    def __signal_spectral_setup(self, display=True):
+        """
+        Signal generator bloc implementation
+        :return: Vertical layout
+        """
+        signal_spectral_box = CustomPushButtonBox(dtype="VBOX")
+        signal_spectral_box.add_title(title="Spectral analysis", font="Times New Roman", size=21, color="white")
+
+        min_width_butt = 120
+        signal_spectral_box.add_button(name="Fourier Spectrum", min_width=min_width_butt)
+        signal_spectral_box.add_button(name="Periodogram", min_width=min_width_butt)
+        signal_spectral_box.add_button(name="Welch", min_width=min_width_butt)
+        signal_spectral_box.add_button(name="Correlogram", min_width=min_width_butt)
+        signal_spectral_box.add_button(name="Reset", min_width=min_width_butt)
+
+        if display:
+            self.__grid_layout_setup_for_layout(signal_spectral_box.get_layout(), row=1, col=5)
+
+        return None
+
+    def __filter_design_setup(self, display=True):
+        """
+        File loading bloc implementation
+        :return: Vertical layout
+        """
+        filter_design_box = CustomPushButtonBox(dtype="VBOX")
+        filter_design_box.add_title(title="Filter Design", font="Times New Roman", size=21, color="white")
+
+        min_width_butt = 120
+        filter_design_box.add_button(name="FIR Design", min_width=min_width_butt)
+        filter_design_box.add_button(name="IIR Design", min_width=min_width_butt)
+        filter_design_box.add_button(name="Reset", min_width=min_width_butt)
+
+        if display:
+            self.__grid_layout_setup_for_layout(filter_design_box.get_layout(), row=1, col=4)
 
         return None
 
@@ -350,16 +436,25 @@ class MainDisplay(QMainWindow):
         Example of grid configuration
         :return: Grid layout
         """
+        min_width = 180
         blue_widget = CustomColor(color='skyblue')
-        red_widget = CustomColor(color='magenta')
+        blue_widget.setMinimumWidth(min_width)
+
+        violet_widget = CustomColor(color='violet')
+        violet_widget.setMinimumWidth(min_width)
+
         salmon_widget = CustomColor(color='burlywood')
+        salmon_widget.setMinimumWidth(min_width)
+
         aqua_widget = CustomColor(color='aquamarine')
+        aqua_widget.setMinimumWidth(min_width)
+
         grey_light_widget = CustomColor(color='lightgrey')
         grey_widget = CustomColor(color='darkgrey')
 
         if display:
             self.__grid_layout_setup_for_widget(blue_widget, row=0, col=4)
-            self.__grid_layout_setup_for_widget(red_widget, row=0, col=5)
+            self.__grid_layout_setup_for_widget(violet_widget, row=0, col=5)
             self.__grid_layout_setup_for_widget(salmon_widget, row=1, col=4)
             self.__grid_layout_setup_for_widget(aqua_widget, row=1, col=5)
 
