@@ -1,18 +1,12 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QMenuBar, QStatusBar, QWidget, )
-from PyQt5.QtWidgets import (QLabel, QHBoxLayout, QVBoxLayout, QGridLayout, )
+from PyQt5.QtWidgets import (QLabel, QHBoxLayout, QVBoxLayout, QGridLayout, QTabWidget)
+from PyQt5.QtWidgets import (QTabBar, QStyle, QStyleOptionTab)
 from PyQt5.QtWidgets import (QButtonGroup, QCheckBox, QPushButton, QLineEdit, QAction)
 
-from PyQt5.QtGui import (QColor, QPalette, QFont)
+from PyQt5.QtGui import (QColor, QPalette, QFont, QPainter, )
 from PyQt5.QtCore import (QRect, Qt)
 from PyQt5.QtGui import QPixmap
-
-
-def _update_layout(layout_obj, widget_obj):
-    layout_obj.addStretch()
-    layout_obj.addWidget(widget_obj)
-    layout_obj.addStretch()
-    return None
 
 
 class CustomColor(QWidget):
@@ -156,6 +150,7 @@ class CustomPushButton(QPushButton):
         self.setMinimumWidth(width_value)
         return None
 
+
 #
 #
 # class EntryWindow(QWidget):
@@ -277,6 +272,46 @@ class CustomPushButtonBox:
         return self.my_layout.get_layout()
 
 
+class MyTabBar(QTabBar):
+    """
+    Il faut trouver le temps de comprendre ce qu'on a fait ici !!!!
+    """
+    def __init__(self, parent):
+        QTabBar.__init__(self, parent)
+        self.colorIndexes = parent.colorIndexes
+
+    def paintEvent(self, event):
+        qp = QPainter(self)
+        qp.setRenderHints(qp.Antialiasing)
+        option = QStyleOptionTab()
+        option.features |= option.HasFrame
+        palette = option.palette
+        for index in range(self.count()):
+            self.initStyleOption(option, index)
+            palette.setColor(palette.Button, self.colorIndexes.get(index, QColor(Qt.green)))
+            palette.setColor(palette.Window, QColor(Qt.black))
+            option.palette = palette
+            self.style().drawControl(QStyle.CE_TabBarTab, option, qp)
+
+
+class CustomTabWidget(QTabWidget):
+
+    def __init__(self):
+        super().__init__()
+        self.colorIndexes = {
+            0: QColor("skyblue"),
+            1: QColor("lightgreen"),
+            2: QColor("violet"),
+            3: QColor("burlywood"),
+        }
+        self.setTabBar(MyTabBar(self))
+
+    def add_widget(self, name, widget_in):
+        self.addTab(widget_in, name)
+        self.setStyleSheet("""color: black; font: 15px Times New Roman""")
+        return None
+
+
 class MainDisplay(QMainWindow):
 
     def __init__(self):
@@ -291,6 +326,8 @@ class MainDisplay(QMainWindow):
         self.__load_file_setup(True)
         self.__signal_spectral_setup(True)
         self.__filter_design_setup(True)
+
+        self.__setup_tab_widget_example_1(True)
 
         self.__run_application()
 
@@ -357,7 +394,7 @@ class MainDisplay(QMainWindow):
         :return: Vertical layout
         """
         filter_design_box = CustomPushButtonBox(dtype="VBOX")
-        filter_design_box.add_title(title="Filter Design", font="Times New Roman", size=21, color="white")
+        filter_design_box.add_title(title="Filter design", font="Times New Roman", size=21, color="white")
 
         min_width_butt = 120
         filter_design_box.add_button(name="FIR Design", min_width=min_width_butt)
@@ -440,7 +477,8 @@ class MainDisplay(QMainWindow):
         aqua_widget.setMinimumWidth(min_width)
 
         grey_light_widget = CustomColor(color='lightgrey')
-        grey_widget = CustomColor(color='grey')
+        # grey_widget = CustomColor(color='grey')
+        empty_widget = QWidget()
 
         if display:
             self.__grid_layout_setup_for_widget(blue_widget, row=0, col=4)
@@ -449,12 +487,37 @@ class MainDisplay(QMainWindow):
             self.__grid_layout_setup_for_widget(violet_widget, row=1, col=4)
             self.__grid_layout_setup_for_widget(salmon_widget, row=1, col=5)
 
-            self.__grid_layout_setup_for_widget(grey_widget, row=0, col=0, row_span=3,
+            self.__grid_layout_setup_for_widget(empty_widget, row=0, col=0, row_span=3,
                                                 col_span=4, dtype="multiple")
             self.__grid_layout_setup_for_widget(grey_light_widget, row=2, col=4, row_span=1,
                                                 col_span=2, dtype="multiple")
 
         return None
+
+    def __setup_tab_widget_example_1(self, display=True):
+
+        min_width = 500
+        blue_widget = CustomColor(color='skyblue')
+        blue_widget.setMinimumWidth(min_width)
+
+        violet_widget = CustomColor(color='violet')
+        violet_widget.setMinimumWidth(min_width)
+
+        salmon_widget = CustomColor(color='burlywood')
+        salmon_widget.setMinimumWidth(min_width)
+
+        aqua_widget = CustomColor(color='lightgreen')
+        aqua_widget.setMinimumWidth(min_width)
+
+        display_tab = CustomTabWidget()
+        display_tab.add_widget(name="Signal generation", widget_in=blue_widget)
+        display_tab.add_widget(name="File load", widget_in=aqua_widget)
+        display_tab.add_widget(name="Filter design", widget_in=violet_widget)
+        display_tab.add_widget(name="Spectral analysis", widget_in=salmon_widget)
+
+        if display:
+            self.__grid_layout_setup_for_widget(display_tab, row=0, col=0, row_span=3,
+                                                col_span=4, dtype="multiple")
 
     def __initializeUI(self):
 
