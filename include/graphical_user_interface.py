@@ -1228,7 +1228,7 @@ class BlackView(QMainWindow):
 
         main_style = signal_gen_box.customize_style(background_clr='skyblue', border_radius=10,
                                                     color='white', border_width=0)
-        local_font = "Times New Roman"
+        local_font = "Ubuntu"
         local_font_size = 12
 
         min_width_butt = 130
@@ -1272,7 +1272,7 @@ class BlackView(QMainWindow):
 
         main_style = signal_load_box.customize_style(background_clr='lightgreen', border_radius=10,
                                                      color='white', border_width=0)
-        local_font = "Times New Roman"
+        local_font = "Ubuntu"
         local_font_size = 12
 
         min_width_butt = 130
@@ -1313,10 +1313,10 @@ class BlackView(QMainWindow):
 
         main_style = signal_spectral_box.customize_style(background_clr='burlywood', border_radius=10,
                                                          color='white', border_width=0)
-        local_font = "Times New Roman"
+        local_font = "Ubuntu"
         local_font_size = 12
 
-        min_width_butt = 130
+        min_width_butt = 170
         min_height_butt = 30
 
         butt_1 = signal_spectral_box.add_button(name="Fourier Spectrum", min_width=min_width_butt,
@@ -1363,7 +1363,7 @@ class BlackView(QMainWindow):
 
         main_style = filter_design_box.customize_style(background_clr='violet', border_radius=10,
                                                        color='white', border_width=0)
-        local_font = "Times New Roman"
+        local_font = "Ubuntu"
         local_font_size = 12
 
         min_width_butt = 130
@@ -1450,20 +1450,20 @@ class BlackView(QMainWindow):
         """
         min_width = 180
 
-        grey_widget_one = CustomColor(color='dark')
+        grey_widget_one = CustomColor(color=QColor(75, 75, 75))
         grey_widget_one.setMinimumWidth(min_width)
 
-        grey_widget_two = CustomColor(color='dark')
+        grey_widget_two = CustomColor(color=QColor(75, 75, 75))
         grey_widget_two.setMinimumWidth(min_width)
 
-        grey_widget_three = CustomColor(color='dark')
+        grey_widget_three = CustomColor(color=QColor(75, 75, 75))
         grey_widget_three.setMinimumWidth(min_width)
 
-        grey_widget_four = CustomColor(color='dark')
+        grey_widget_four = CustomColor(color=QColor(75, 75, 75))
         grey_widget_four.setMinimumWidth(min_width)
 
-        grey_light_widget = CustomColor(color='dark')
-        grey_widget = CustomColor(color='dark')
+        grey_light_widget = CustomColor(color=QColor(75, 75, 75))
+        grey_widget = CustomColor(color=QColor(75, 75, 75))
 
         empty_widget = QWidget()
 
