@@ -337,10 +337,10 @@ class ClassicView(QMainWindow):
         :return: Vertical layout
         """
         signal_gen_box = CustomPushButtonBox(dtype="VBOX")
-        title = signal_gen_box.add_title(title="Signal generation", font="Times New Roman", size=21, color='black')
+        title = signal_gen_box.add_title(title="Signal generation",  font="Ubuntu", size=18, color='white')
         signal_gen_box.update_layout(title)
 
-        local_font = "Times New Roman"
+        local_font = "Ubuntu"
         local_font_size = 12
 
         min_width_butt = 130
@@ -374,10 +374,10 @@ class ClassicView(QMainWindow):
         :return: Vertical layout
         """
         signal_load_box = CustomPushButtonBox(dtype="VBOX")
-        title = signal_load_box.add_title(title="File load", font="Times New Roman", size=21, color="black")
+        title = signal_load_box.add_title(title="File load",  font="Ubuntu", size=18, color="white")
         signal_load_box.update_layout(title)
 
-        local_font = "Times New Roman"
+        local_font = "Ubuntu"
         local_font_size = 12
 
         min_width_butt = 130
@@ -407,14 +407,14 @@ class ClassicView(QMainWindow):
         :return: Vertical layout
         """
         signal_spectral_box = CustomPushButtonBox(dtype="VBOX")
-        title = signal_spectral_box.add_title(title="Spectral analysis", font="Times New Roman", size=21, color="black")
+        title = signal_spectral_box.add_title(title="Spectral analysis",  font="Ubuntu", size=18, color="white")
 
         signal_spectral_box.update_layout(title)
 
-        local_font = "Times New Roman"
+        local_font = "Ubuntu"
         local_font_size = 12
 
-        min_width_butt = 130
+        min_width_butt = 170
         min_height_butt = 30
 
         butt_1 = signal_spectral_box.add_button(name="Fourier Spectrum", min_width=min_width_butt,
@@ -449,11 +449,11 @@ class ClassicView(QMainWindow):
         :return: Vertical layout
         """
         filter_design_box = CustomPushButtonBox(dtype="VBOX")
-        title = filter_design_box.add_title(title="Filter design", font="Times New Roman", size=21, color="black")
+        title = filter_design_box.add_title(title="Filter design",  font="Ubuntu", size=18, color="white")
 
         filter_design_box.update_layout(title)
 
-        local_font = "Times New Roman"
+        local_font = "Ubuntu"
         local_font_size = 12
 
         min_width_butt = 130
@@ -746,12 +746,12 @@ class UniformView(QMainWindow):
         :return: Vertical layout
         """
         signal_gen_box = CustomPushButtonBox(dtype="VBOX")
-        title = signal_gen_box.add_title(title="Signal generation", font="Times New Roman", size=21, color='dimgrey')
+        title = signal_gen_box.add_title(title="Signal generation", font="Ubuntu", size=18, color='dimgrey')
         signal_gen_box.update_layout(title)
 
         main_style = signal_gen_box.customize_style(background_clr='skyblue', border_radius=10,
                                                     color='white', border_width=0)
-        local_font = "Times New Roman"
+        local_font = "Ubuntu"
         local_font_size = 12
 
         min_width_butt = 130
@@ -790,12 +790,12 @@ class UniformView(QMainWindow):
         :return: Vertical layout
         """
         signal_load_box = CustomPushButtonBox(dtype="VBOX")
-        title = signal_load_box.add_title(title="File load", font="Times New Roman", size=21, color="dimgrey")
+        title = signal_load_box.add_title(title="File load",  font="Ubuntu", size=18, color="dimgrey")
         signal_load_box.update_layout(title)
 
         main_style = signal_load_box.customize_style(background_clr='lightgreen', border_radius=10,
                                                      color='white', border_width=0)
-        local_font = "Times New Roman"
+        local_font = "Ubuntu"
         local_font_size = 12
 
         min_width_butt = 130
@@ -829,17 +829,17 @@ class UniformView(QMainWindow):
         :return: Vertical layout
         """
         signal_spectral_box = CustomPushButtonBox(dtype="VBOX")
-        title = signal_spectral_box.add_title(title="Spectral analysis", font="Times New Roman", size=21,
+        title = signal_spectral_box.add_title(title="Spectral analysis",  font="Ubuntu", size=18,
                                               color="dimgrey")
 
         signal_spectral_box.update_layout(title)
 
         main_style = signal_spectral_box.customize_style(background_clr='burlywood', border_radius=10,
                                                          color='white', border_width=0)
-        local_font = "Times New Roman"
+        local_font = "Ubuntu"
         local_font_size = 12
 
-        min_width_butt = 130
+        min_width_butt = 170
         min_height_butt = 30
 
         butt_1 = signal_spectral_box.add_button(name="Fourier Spectrum", min_width=min_width_butt,
@@ -880,13 +880,13 @@ class UniformView(QMainWindow):
         :return: Vertical layout
         """
         filter_design_box = CustomPushButtonBox(dtype="VBOX")
-        title = filter_design_box.add_title(title="Filter design", font="Times New Roman", size=21, color="dimgrey")
+        title = filter_design_box.add_title(title="Filter design",  font="Ubuntu", size=18, color="dimgrey")
 
         filter_design_box.update_layout(title)
 
         main_style = filter_design_box.customize_style(background_clr='violet', border_radius=10,
                                                        color='white', border_width=0)
-        local_font = "Times New Roman"
+        local_font = "Ubuntu"
         local_font_size = 12
 
         min_width_butt = 130
@@ -1223,7 +1223,7 @@ class BlackView(QMainWindow):
         :return: Vertical layout
         """
         signal_gen_box = CustomPushButtonBox(dtype="VBOX")
-        title = signal_gen_box.add_title(title="Signal generation", font="Times New Roman", size=22, color='dodgerblue')
+        title = signal_gen_box.add_title(title="Signal generation",  font="Ubuntu", size=18, color='dodgerblue')
         signal_gen_box.update_layout(title)
 
         main_style = signal_gen_box.customize_style(background_clr='skyblue', border_radius=10,
@@ -1267,7 +1267,7 @@ class BlackView(QMainWindow):
         :return: Vertical layout
         """
         signal_load_box = CustomPushButtonBox(dtype="VBOX")
-        title = signal_load_box.add_title(title="File load", font="Times New Roman", size=22, color='teal')
+        title = signal_load_box.add_title(title="File load",  font="Ubuntu", size=18, color='teal')
         signal_load_box.update_layout(title)
 
         main_style = signal_load_box.customize_style(background_clr='lightgreen', border_radius=10,
@@ -1306,7 +1306,7 @@ class BlackView(QMainWindow):
         :return: Vertical layout
         """
         signal_spectral_box = CustomPushButtonBox(dtype="VBOX")
-        title = signal_spectral_box.add_title(title="Spectral analysis", font="Times New Roman", size=22,
+        title = signal_spectral_box.add_title(title="Spectral analysis",  font="Ubuntu", size=18,
                                               color='chocolate')
 
         signal_spectral_box.update_layout(title)
@@ -1357,7 +1357,7 @@ class BlackView(QMainWindow):
         :return: Vertical layout
         """
         filter_design_box = CustomPushButtonBox(dtype="VBOX")
-        title = filter_design_box.add_title(title="Filter design", font="Times New Roman", size=22, color='fuchsia')
+        title = filter_design_box.add_title(title="Filter design",  font="Ubuntu", size=18, color='fuchsia')
 
         filter_design_box.update_layout(title)
 
